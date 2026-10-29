@@ -1,0 +1,1468 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>转歌词</title>
+<style>
+:root{
+--bg:#f5f1e8;
+--surface:#fffdf7;
+--surface-2:#efe9db;
+--ink:#262017;
+--muted:#6f6450;
+--line:#ddd3bd;
+--accent:#a0271e;
+--accent-strong:#8c1f18;
+--accent-ink:#fff8ec;
+--gold:#a97e14;
+--gold-soft:#f3e7c3;
+--ok:#2e7d46;
+--err:#b3261e;
+--slide-bg:#0b0b0e;
+--slide-ink:#ffffff;
+--shadow:0 1px 2px rgba(60,45,10,.06),0 8px 24px rgba(60,45,10,.07);
+--radius:14px;
+}
+@media (prefers-color-scheme: dark){
+:root{
+--bg:#16130d;
+--surface:#201c14;
+--surface-2:#29241a;
+--ink:#f1ead8;
+--muted:#ab9f83;
+--line:#3a3425;
+--accent:#d84f42;
+--accent-strong:#e0604f;
+--accent-ink:#fff6ea;
+--gold:#d2a93c;
+--gold-soft:#3a3016;
+--ok:#5cb877;
+--err:#e07a72;
+--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+margin:0;
+background:var(--bg);
+color:var(--ink);
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+font-size:16px;
+line-height:1.6;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:20px 16px 150px;}
+.lead{margin:6px 2px 18px;}
+.lead h1{font-family:"Songti SC","STSong","SimSun",serif;font-weight:900;font-size:27px;margin:0 0 6px;letter-spacing:.01em;}
+.lead p{margin:0;color:var(--muted);font-size:15px;max-width:640px;}
+.lead .rule{height:3px;width:64px;background:var(--gold);border-radius:2px;margin-top:12px;}
+
+section.card{
+background:var(--surface);
+border:1px solid var(--line);
+border-radius:var(--radius);
+box-shadow:var(--shadow);
+padding:20px;
+margin-bottom:18px;
+}
+.step-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.step-num{
+flex:none;width:30px;height:30px;border-radius:50%;
+border:2px solid var(--gold);color:var(--gold);
+display:flex;align-items:center;justify-content:center;
+font-weight:900;font-size:15px;font-family:"Songti SC","STSong","SimSun",serif;
+}
+.step-head h2{font-family:"Songti SC","STSong","SimSun",serif;font-size:20px;font-weight:700;margin:0;}
+.step-sub{color:var(--muted);font-size:14px;margin:0 0 14px 42px;}
+.step-body{margin-left:42px;}
+@media (max-width:560px){
+.step-sub,.step-body{margin-left:0;}
+section.card{padding:16px;}
+}
+
+/* dropzone */
+.dropzone{
+border:2px dashed var(--line);
+border-radius:12px;
+padding:30px 18px;
+text-align:center;
+cursor:pointer;
+background:var(--surface-2);
+transition:border-color .15s, background .15s;
+}
+.dropzone:hover,.dropzone.drag{border-color:var(--gold);background:var(--gold-soft);}
+.dropzone svg{width:40px;height:40px;stroke:var(--gold);margin-bottom:8px;}
+.dropzone .dz-title{font-weight:700;font-size:17px;}
+.dropzone .dz-hint{color:var(--muted);font-size:13.5px;margin-top:4px;}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.row +.row{margin-top:12px;}
+label.f-label{font-size:14px;font-weight:700;}
+select,input[type="text"]{
+font:inherit;font-size:15px;color:var(--ink);
+background:var(--surface);border:1px solid var(--line);border-radius:9px;
+padding:8px 10px;
+}
+select:focus,input[type="text"]:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
+
+.status{margin-top:14px;display:none;}
+.status.show{display:block;}
+.status .bar{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line);}
+.status .bar i{display:block;height:100%;width:0%;background:var(--accent);transition:width .2s;}
+.status .msg{font-size:14px;margin-top:7px;color:var(--muted);}
+.status .msg.err{color:var(--err);font-weight:700;}
+.status .msg.ok{color:var(--ok);font-weight:700;}
+.filelist{margin-top:10px;font-size:13.5px;color:var(--muted);}
+.filelist div{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dotted var(--line);}
+.filelist div:last-child{border-bottom:none;}
+
+/* editor */
+textarea{
+width:100%;min-height:300px;resize:vertical;
+font:inherit;font-size:16.5px;line-height:1.75;color:var(--ink);
+background:var(--surface);border:1px solid var(--line);border-radius:10px;
+padding:14px 16px;
+}
+.title-input{width:100%;font-size:17px;font-weight:700;}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+
+.btn{
+font:inherit;font-size:15px;font-weight:700;cursor:pointer;
+border-radius:10px;padding:9px 16px;border:1px solid var(--line);
+background:var(--surface);color:var(--ink);
+display:inline-flex;align-items:center;gap:7px;
+transition:background .12s,border-color .12s,transform .05s;
+}
+.btn:active{transform:scale(.98);}
+.btn svg{width:17px;height:17px;flex:none;}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+.btn.primary:hover{background:var(--accent-strong);}
+.btn.ghost:hover{border-color:var(--gold);}
+.btn.small{font-size:13.5px;padding:6px 11px;border-radius:8px;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.pill{
+font:inherit;font-size:14px;font-weight:500;cursor:pointer;
+border:1px solid var(--line);background:var(--surface);color:var(--muted);
+border-radius:999px;padding:6px 14px;
+}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700;}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.seg button{
+font:inherit;font-size:14.5px;font-weight:500;cursor:pointer;border:none;
+background:var(--surface);color:var(--muted);padding:8px 15px;
+}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:700;}
+.seg button + button{border-left:1px solid var(--line);}
+
+.ctl{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;}
+.ctl .group{min-width:200px;}
+.ctl .group >.g-label{font-size:14px;font-weight:700;margin-bottom:8px;display:block;}
+.ctl .hint{font-size:13px;color:var(--muted);margin-top:6px;max-width:300px;}
+.hint{font-size:13px;color:var(--muted);}
+.stepper{display:inline-flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.stepper button{
+width:42px;height:42px;font-size:20px;font-weight:700;cursor:pointer;
+border:none;background:var(--surface-2);color:var(--ink);
+}
+.stepper .val{min-width:74px;text-align:center;font-weight:900;font-size:17px;}
+input[type="range"]{accent-color:var(--accent);width:170px;}
+.zoom-val{font-weight:700;font-size:14px;}
+
+/* slides */
+.stats{font-size:14.5px;color:var(--muted);margin:0 0 14px 42px;}
+.stats b{color:var(--ink);}
+.slides{
+display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));
+gap:14px;margin-left:42px;
+}
+@media (max-width:560px){.slides{margin-left:0;}.stats{margin-left:0;}}
+.slide{
+position:relative;aspect-ratio:16/9;background:var(--slide-bg);color:var(--slide-ink);
+border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid #000;
+display:flex;align-items:center;justify-content:center;padding:12% 7% 9%;
+}
+.slide:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+.slide .lines{text-align:center;font-weight:900;line-height:1.45;letter-spacing:.02em;}
+.slide .lines p{margin:0;}
+.slide .chip{
+position:absolute;top:8px;left:10px;font-size:11.5px;font-weight:700;
+color:#e9c767;border:1px solid rgba(233,199,103,.55);border-radius:5px;padding:1px 7px;
+letter-spacing:.06em;
+}
+.slide .num{position:absolute;right:10px;bottom:7px;font-size:11px;color:rgba(255,255,255,.5);font-weight:500;}
+.slide .lines p.py{font-size:.55em;font-weight:600;color:#e9c767;letter-spacing:.05em;}
+.slide .lines p.tr{font-size:.82em;font-weight:700;opacity:.88;}
+.slide .lines p.tr2{font-size:.76em;font-weight:700;opacity:.62;}
+.lb-slide .lines p.py{font-size:.55em;font-weight:600;color:#e9c767;letter-spacing:.05em;}
+.lb-slide .lines p.tr{font-size:.82em;font-weight:700;opacity:.88;}
+.lb-slide .lines p.tr2{font-size:.76em;font-weight:700;opacity:.62;}
+.langchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:4px;}
+.langchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--gold);background:var(--gold-soft);color:var(--ink);border-radius:999px;padding:4px 6px 4px 12px;font-size:14px;font-weight:700;}
+.langchip button{border:none;background:transparent;color:var(--muted);font:inherit;font-size:14px;cursor:pointer;line-height:1;padding:3px 5px;border-radius:50%;}
+.empty{
+margin-left:42px;border:1.5px dashed var(--line);border-radius:12px;
+padding:34px 18px;text-align:center;color:var(--muted);font-size:15px;
+}
+@media (max-width:560px){.empty{margin-left:0;}}
+
+/* bottom bar */
+.actionbar{
+position:fixed;left:0;right:0;bottom:0;z-index:40;
+background:var(--surface);border-top:1px solid var(--line);
+padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+.actionbar .inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.actionbar .info{font-size:14.5px;color:var(--muted);margin-right:auto;}
+.actionbar .info b{color:var(--ink);font-size:16px;}
+.toast{
+position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);
+background:var(--ink);color:var(--bg);font-size:14.5px;font-weight:700;
+padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;
+max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* lightbox */
+.lightbox{
+position:fixed;inset:0;z-index:80;background:rgba(5,5,8,.94);
+display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px;
+}
+.lightbox.open{display:flex;}
+.lb-slide{
+width:min(94vw,1120px);aspect-ratio:16/9;background:#000;color:#fff;border-radius:8px;
+display:flex;align-items:center;justify-content:center;position:relative;padding:6% 5%;
+border:1px solid rgba(255,255,255,.14);
+}
+.lb-slide .lines{text-align:center;font-weight:900;line-height:1.45;}
+.lb-slide .lines p{margin:0;}
+.lb-slide .chip{
+position:absolute;top:14px;left:16px;font-size:14px;font-weight:700;color:#e9c767;
+border:1px solid rgba(233,199,103,.55);border-radius:6px;padding:2px 10px;
+}
+.lb-nav{display:flex;align-items:center;gap:14px;color:#eee;font-size:15px;}
+.lb-nav button{
+font:inherit;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.35);
+background:transparent;color:#fff;border-radius:9px;padding:8px 18px;
+}
+.lb-nav button:disabled{opacity:.35;cursor:default;}
+.lb-close{
+position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:50%;
+border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font-size:19px;cursor:pointer;line-height:1;
+}
+@media (prefers-reduced-motion: reduce){
+*{transition:none!important;}
+}
+
+input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
+@media (max-width:640px){
+.actionbar{position:static;padding:14px 16px 22px;}
+.actionbar .inner{display:grid;grid-template-columns:1fr auto;gap:8px;}
+.actionbar .info{margin-right:0;align-self:center;font-size:13.5px;}
+.actionbar .btn{padding:8px 12px;font-size:14px;}
+.actionbar #downloadBtn{grid-column:1 / -1;justify-content:center;padding:11px 12px;font-size:15.5px;}
+.wrap{padding-bottom:26px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="lead">
+<h1>歌词转 ProPresenter</h1>
+<p>已经有现成歌词的，直接粘贴文本；只有歌谱的，把图片或 PDF 放进来识别。校对后按段落拆成一页一页，导出 ProPresenter 能直接导入的文本文件。只取歌词，不识别音符。分页之后还可以可选把歌词翻译成多语对照，或给中文歌词加拼音。</p>
+<div class="rule"></div>
+</div>
+
+<!-- 1 导入 -->
+<section class="card">
+<div class="step-head"><div class="step-num">1</div><h2>导入歌词</h2></div>
+<p class="step-sub">两种办法选一种：已经有现成歌词文本的，用「粘贴歌词」；只有歌谱图片或 PDF 的，用「歌谱识别」。导入后到第 2 步校对。</p>
+<div class="step-body">
+<div class="seg" role="group" aria-label="导入方式" style="margin-bottom:16px;">
+<button type="button" id="tabPaste" aria-pressed="true">粘贴歌词文本</button>
+<button type="button" id="tabSheet" aria-pressed="false">歌谱图片 / PDF</button>
+</div>
+
+<div id="panelPaste">
+<textarea id="pasteBox" style="min-height:190px;" placeholder="把现成的歌词粘贴到这里，一行一句，空行分段……"></textarea>
+<div class="toolbar">
+<button class="btn primary small" id="loadPasteBtn" type="button">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="m6 10 6 6 6-6"/><path d="M4 20h16"/></svg>
+载入并拆页
+</button>
+<button class="btn ghost small" id="clipBtn" type="button">从剪贴板粘贴</button>
+<button class="btn ghost small" id="txtBtn" type="button">打开 .txt 文件</button>
+<button class="btn ghost small" id="clearPasteBtn" type="button">清空</button>
+</div>
+<p class="hint" style="margin:10px 0 0;">格式要求：一行一句歌词，段落之间空一行；段落名（如「主歌一」「副歌」）单独占一行即可，第 3 步可设为标签、不进正文。在页面任意空白处按粘贴（Ctrl+V），歌词也会自动填进来。歌词在网页上的，从网页里复制文字粘贴到这里即可（受浏览器限制，工具不能直接打开网页抓取）。中、英、日、韩等多语言可以混排在同一首里，一起校对、一起导出到同一个文件。</p>
+<input type="file" id="txtInput" accept=".txt,.text,.md,text/plain" hidden />
+</div>
+
+<div id="panelSheet" hidden>
+<div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="选择或拖入歌谱文件">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
+<div class="dz-title">点这里选择文件，或把文件拖进来</div>
+<div class="dz-hint">支持图片（JPG / PNG 等）和 PDF，可一次选多个；手机上也可以直接粘贴剪贴板里的歌谱截图</div>
+</div>
+<input type="file" id="fileInput" accept="image/*,.pdf,application/pdf" multiple hidden />
+<div class="row" style="margin-top:14px;">
+<label class="f-label" for="langSel">谱面文字</label>
+<select id="langSel">
+<option value="chi_sim+eng" selected>简体中文</option>
+<option value="chi_tra+eng">繁體中文</option>
+<option value="eng">英文</option>
+<option value="jpn">日文</option>
+<option value="kor">韩文</option>
+<option value="chi_sim+jpn+kor+eng">中日韩英混合</option>
+</select>
+<span style="font-size:13.5px;color:var(--muted);">PDF 里有文字的直接读取，没有文字的扫描页自动识别。识别在本机离线进行，无需联网；首次加载模型会稍慢。</span>
+</div>
+<div class="status" id="status">
+<div class="bar"><i id="barFill"></i></div>
+<div class="msg" id="statusMsg"></div>
+<div class="filelist" id="fileList"></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 2 校对 -->
+<section class="card">
+<div class="step-head"><div class="step-num">2</div><h2>校对歌词</h2></div>
+<p class="step-sub">粘贴或识别进来的歌词都汇集在这里，对照原谱改错字。空行分段落；段落名（如「主歌一」「副歌」）单独一行，第 3 步可设为标签不进正文。</p>
+<div class="step-body">
+<div class="row">
+<label class="f-label" for="titleInput">歌名</label>
+<input type="text" id="titleInput" class="title-input" placeholder="例如：奇异恩典" style="flex:1;min-width:180px;" />
+</div>
+<div class="row">
+<textarea id="lyricText" placeholder="识别出的歌词会出现在这里，也可以直接粘贴歌词……"></textarea>
+</div>
+<div class="toolbar">
+<button class="btn ghost small" id="cleanBtn" type="button">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>
+智能清理
+</button>
+<button class="pill" id="optNotation" type="button" aria-pressed="true">删简谱数字行</button>
+<button class="pill" id="optEdges" type="button" aria-pressed="false">去行首尾数字符号</button>
+<button class="pill" id="optSpaces" type="button" aria-pressed="true">只去汉字间空格</button>
+<button class="pill" id="optPunct" type="button" aria-pressed="true">去除标点符号</button>
+<span style="flex:1"></span>
+<button class="btn ghost small" id="demoBtn" type="button">载入示例</button>
+<button class="btn ghost small" id="clearBtn" type="button">清空</button>
+</div>
+</div>
+</section>
+
+<!-- 3 拆页 -->
+<section class="card">
+<div class="step-head"><div class="step-num">3</div><h2>拆页设置</h2></div>
+<p class="step-sub">敬拜投影一般每页 2 行，年长者看大字可以选每页 1 行。点任意一页可以放大查看。</p>
+<div class="step-body">
+<div class="ctl">
+<div class="group">
+<span class="g-label">每页容量</span>
+<div class="seg" role="group" aria-label="分页依据" style="margin-bottom:10px;">
+<button type="button" id="byLines" aria-pressed="true">按行数</button>
+<button type="button" id="byChars" aria-pressed="false">按字数</button>
+</div>
+<div class="stepper" id="perRow">
+<button type="button" id="perMinus" aria-label="减少每页行数">−</button>
+<div class="val"><span id="perVal">2</span> 行</div>
+<button type="button" id="perPlus" aria-label="增加每页行数">＋</button>
+</div>
+<div class="stepper" id="charRow" style="display:none;">
+<button type="button" id="charMinus" aria-label="减少每页字数">−</button>
+<div class="val"><span id="charVal">24</span> 字</div>
+<button type="button" id="charPlus" aria-label="增加每页字数">＋</button>
+</div>
+<div class="hint">按字数：每页歌词总字数不超过设定值装页，一整行不会被拆开；单行超过上限时自己占一页。</div>
+</div>
+<div class="group">
+<span class="g-label">分段方式</span>
+<div class="seg" role="group" aria-label="分段方式">
+<button type="button" id="modeSection" aria-pressed="true">按段落拆页</button>
+<button type="button" id="modeFlow" aria-pressed="false">连续拆页</button>
+</div>
+<div class="hint">按段落：空行处必换页，段落不跨页。连续：忽略空行，一行行往下排满。</div>
+</div>
+<div class="group">
+<span class="g-label">段落名处理</span>
+<div class="seg" role="group" aria-label="段落名处理">
+<button type="button" id="labelAsTag" aria-pressed="true">作标签</button>
+<button type="button" id="labelAsText" aria-pressed="false">作正文</button>
+</div>
+<div class="hint">作标签：「主歌一」「副歌」只显示在页面角上，不进歌词正文。</div>
+</div>
+<div class="group">
+<span class="g-label">预览字号</span>
+<div class="row" style="gap:8px;">
+<input type="range" id="zoomRange" min="80" max="135" value="100" />
+<span class="zoom-val" id="zoomVal">100%</span>
+</div>
+<div class="hint">只影响这里的预览，不影响导出文件。</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 4 翻译 / 拼音 -->
+<section class="card">
+<div class="step-head"><div class="step-num">4</div><h2>翻译 / 拼音（可选）</h2></div>
+<p class="step-sub">分页定好之后再做这一步：把每页歌词翻译成一种或多种语言、做成多语对照（原文在上，各语言译文依次在下），或者给中文歌词加拼音。生成结果会同步到第 5 步预览和导出的文件；改了歌词或拆页设置，需要重新生成。</p>
+<div class="step-body">
+<div class="seg" role="group" aria-label="处理方式">
+<button type="button" id="xfNone" aria-pressed="true">不处理</button>
+<button type="button" id="xfTranslate" aria-pressed="false">多语翻译</button>
+<button type="button" id="xfPinyin" aria-pressed="false">加拼音</button>
+</div>
+
+<div id="panelTranslate" hidden style="margin-top:16px;">
+<div class="row">
+<label class="f-label" for="transLang">目标语言（可多选）</label>
+<select id="transLang">
+<option value="en" selected>英语 English</option>
+<option value="ja">日语 日本語</option>
+<option value="ko">韩语 한국어</option>
+<option value="zh-TW">繁体中文</option>
+<option value="zh-CN">简体中文</option>
+<option value="es">西班牙语 Español</option>
+<option value="fr">法语 Français</option>
+<option value="de">德语 Deutsch</option>
+<option value="ru">俄语 Русский</option>
+<option value="pt">葡萄牙语 Português</option>
+<option value="it">意大利语 Italiano</option>
+<option value="ar">阿拉伯语 العربية</option>
+<option value="he">希伯来语 עברית</option>
+<option value="el">希腊语 Ελληνικά</option>
+<option value="la">拉丁语 Latina</option>
+<option value="hi">印地语 हिन्दी</option>
+<option value="th">泰语 ไทย</option>
+<option value="vi">越南语 Tiếng Việt</option>
+<option value="id">印尼语 Bahasa Indonesia</option>
+<option value="ms">马来语 Bahasa Melayu</option>
+<option value="fil">菲律宾语 Filipino</option>
+<option value="tr">土耳其语 Türkçe</option>
+<option value="nl">荷兰语 Nederlands</option>
+<option value="pl">波兰语 Polski</option>
+<option value="uk">乌克兰语 Українська</option>
+<option value="mn">蒙古语 Монгол</option>
+<option value="my">缅甸语 မြန်မာ</option>
+<option value="km">高棉语 ខ្មែរ</option>
+<option value="lo">老挝语 ລາວ</option>
+<option value="ne">尼泊尔语 नेपाली</option>
+<option value="fa">波斯语 فارسی</option>
+<option value="ur">乌尔都语 اردو</option>
+<option value="bn">孟加拉语 বাংলা</option>
+<option value="ta">泰米尔语 தமிழ்</option>
+<option value="sw">斯瓦希里语 Kiswahili</option>
+<option value="am">阿姆哈拉语 አማርኛ</option>
+</select>
+<input type="text" id="transLangCustom" placeholder="或填语言代码，如 tl、te" style="width:200px;" />
+<button class="btn ghost small" id="addLangBtn" type="button">添加语言</button>
+</div>
+<div class="langchips" id="langChips" aria-label="已选的目标语言"></div>
+<div class="row">
+<button class="btn primary small" id="translateBtn" type="button">生成多语对照</button>
+<span class="hint">分页不变，每页原文在上，各语言的译文依次排在下面。</span>
+</div>
+<p class="hint" style="margin:10px 0 0;">从列表选一种语言点「添加语言」，或在输入框里填语言代码再添加，最多选 4 种；点已选语言上的 ✕ 可以去掉。翻译需要联网，走在线翻译服务、逐页逐语言翻译，语言选得越多越慢。机器翻译请对照原文校对一遍，经文和专有名词尤其容易出错。</p>
+<div class="status" id="transStatus">
+<div class="bar"><i id="transBarFill"></i></div>
+<div class="msg" id="transMsg"></div>
+</div>
+</div>
+
+<div id="panelPinyin" hidden style="margin-top:16px;">
+<div class="row">
+<span class="f-label">拼音位置</span>
+<div class="seg" role="group" aria-label="拼音位置">
+<button type="button" id="pyAbove" aria-pressed="true">拼音在上一行</button>
+<button type="button" id="pyParen" aria-pressed="false">拼音在括号内</button>
+</div>
+</div>
+<div class="row">
+<button class="btn primary small" id="pinyinBtn" type="button">生成拼音</button>
+<span class="hint">只给汉字注音（带声调），英文、数字、标点原样保留。</span>
+</div>
+<p class="hint" style="margin:10px 0 0;">拼音词库已内置本机，无需联网。多音字按常用读音注音，像「乐、行、重」这类字，重要场合请再检查一遍。</p>
+<div class="status" id="pyStatus">
+<div class="bar"><i id="pyBarFill"></i></div>
+<div class="msg" id="pyMsg"></div>
+</div>
+</div>
+
+<p class="hint" id="xfHint" style="margin:12px 0 0;">现在是原文模式：预览和导出就是歌词原文。</p>
+</div>
+</section>
+
+<!-- 5 预览 -->
+<section class="card">
+<div class="step-head"><div class="step-num">5</div><h2>分页预览</h2></div>
+<p class="stats" id="stats">还没有歌词。</p>
+<div class="slides" id="slides"></div>
+<div class="empty" id="emptyState">歌词填好后，这里会按页显示投影效果。</div>
+</section>
+</div>
+
+<!-- 导出栏 -->
+<div class="actionbar">
+<div class="inner">
+<div class="info" id="barInfo">共 <b>0</b> 页</div>
+<button class="btn ghost" id="copyBtn" type="button">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+复制分页文本
+</button>
+<button class="btn primary" id="downloadBtn" type="button">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="m6 10 6 6 6-6"/><path d="M4 20h16"/></svg>
+下载 ProPresenter 文件
+</button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 放大查看 -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="幻灯片放大预览">
+<button class="lb-close" id="lbClose" type="button" aria-label="关闭">✕</button>
+<div class="lb-slide" id="lbSlide">
+<div class="chip" id="lbChip" style="display:none"></div>
+<div class="lines" id="lbLines"></div>
+</div>
+<div class="lb-nav">
+<button type="button" id="lbPrev">← 上一页</button>
+<span id="lbCount"></span>
+<button type="button" id="lbNext">下一页 →</button>
+</div>
+</div>
+
+<script>
+"use strict";
+var $ = function (id) { return document.getElementById(id);};
+
+var state = {
+perSlide: 2,
+pageBy: "lines", // lines | chars
+maxChars: 24,
+mode: "section", // section | flow
+labelAsTag: true,
+zoom: 1,
+slides: [],
+xfMode: "none",
+transLangs: [{ code: "en", name: "英语 English"}],
+pyStyle: "above",
+display: null,
+displayKey: "",
+xfBusy: false,
+busy: false,
+worker: null,
+workerLang: null
+};
+
+/* ---------- 小工具 ---------- */
+function loadScript(src) {
+return new Promise(function (resolve, reject) {
+var s = document.createElement("script");
+s.src = src;
+s.onload = resolve;
+s.onerror = function () { reject(new Error("load failed: " + src));};
+document.head.appendChild(s);
+});
+}
+var toastTimer = null;
+function toast(msg) {
+var t = $("toast");
+t.textContent = msg;
+t.classList.add("show");
+clearTimeout(toastTimer);
+toastTimer = setTimeout(function () { t.classList.remove("show");}, 2400);
+}
+function setStatus(pct, msg, kind) {
+var st = $("status");
+st.classList.add("show");
+if (typeof pct === "number") $("barFill").style.width = Math.round(pct * 100) + "%";
+var m = $("statusMsg");
+m.textContent = msg || "";
+m.className = "msg" + (kind? " " + kind: "");
+}
+function pillToggle(btn) {
+btn.setAttribute("aria-pressed", btn.getAttribute("aria-pressed") === "true"? "false": "true");
+return btn.getAttribute("aria-pressed") === "true";
+}
+function segSet(onBtn, offBtn, val) {
+onBtn.setAttribute("aria-pressed", "true");
+offBtn.setAttribute("aria-pressed", "false");
+return val;
+}
+
+/* ---------- OCR / PDF 组件（按需加载） ---------- */
+function ensureTesseract() {
+if (window.Tesseract) return Promise.resolve();
+return loadScript("vendor/tesseract.min.js");
+}
+function ensurePdf() {
+if (window.pdfjsLib) return Promise.resolve();
+return loadScript("vendor/pdf.min.js").then(function () {
+window.pdfjsLib.GlobalWorkerOptions.workerSrc = "vendor/pdf.worker.min.js";
+});
+}
+function getWorker(lang, onProgress) {
+if (state.worker && state.workerLang === lang) return Promise.resolve(state.worker);
+var old = state.worker;
+var chain = old? old.terminate().catch(function () {}): Promise.resolve();
+return chain.then(function () {
+return Tesseract.createWorker(lang, 1, {
+workerPath: new URL("vendor/worker.min.js", window.location.href).href,
+corePath: new URL("vendor", window.location.href).href,
+langPath: new URL("tessdata", window.location.href).href,
+gzip: false,
+logger: function (m) {
+if (m.status === "recognizing text" && onProgress) onProgress(m.progress || 0);
+}
+});
+}).then(function (w) {
+state.worker = w;
+state.workerLang = lang;
+return w;
+});
+}
+function killWorker() {
+if (state.worker) {
+var w = state.worker;
+state.worker = null; state.workerLang = null;
+w.terminate().catch(function () {});
+}
+}
+
+function imageFileToCanvas(file) {
+return new Promise(function (resolve, reject) {
+var url = URL.createObjectURL(file);
+var img = new Image();
+img.onload = function () {
+var w = img.naturalWidth, h = img.naturalHeight;
+var scale = 1;
+if (w < 1600) scale = Math.min(2.2, 1600 / w);
+if (w * scale > 2600) scale = 2600 / w;
+var c = document.createElement("canvas");
+c.width = Math.round(w * scale);
+c.height = Math.round(h * scale);
+var ctx = c.getContext("2d");
+try { ctx.filter = "grayscale(1) contrast(1.12)";} catch (e) {}
+ctx.drawImage(img, 0, 0, c.width, c.height);
+URL.revokeObjectURL(url);
+resolve(c);
+};
+img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("图片读取失败"));};
+img.src = url;
+});
+}
+
+function ocrCanvas(canvas, lang, onProgress) {
+return getWorker(lang, onProgress).then(function (w) {
+return w.recognize(canvas);
+}).then(function (res) { return (res.data && res.data.text) || "";});
+}
+
+function processPdf(file, lang, fileIdx, fileCount) {
+return ensurePdf().then(function () {
+return file.arrayBuffer();
+}).then(function (buf) {
+return window.pdfjsLib.getDocument({ data: buf}).promise;
+}).then(function (pdf) {
+var pages = [];
+var chain = Promise.resolve();
+var total = pdf.numPages;
+for (var i = 1; i <= total; i++) {
+(function (pageNo) {
+chain = chain.then(function () {
+return pdf.getPage(pageNo).then(function (page) {
+var base = (fileIdx + (pageNo - 1) / total) / fileCount;
+setStatus(base, "正在处理 " + file.name + " 第 " + pageNo + "/" + total + " 页…");
+var text = "";
+return page.getTextContent().then(function (tc) {
+tc.items.forEach(function (it) { text += it.str + (it.hasEOL? "\n": " ");});
+var meaningful = text.replace(/\s/g, "").length;
+if (meaningful >= 20) { pages.push(text); return null;}
+// 扫描页：渲染成图再识别
+var vp1 = page.getViewport({ scale: 1});
+var scale = 2200 / vp1.width;
+if (scale > 3) scale = 3;
+var vp = page.getViewport({ scale: scale});
+var c = document.createElement("canvas");
+c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+var ctx = c.getContext("2d");
+return page.render({ canvasContext: ctx, viewport: vp}).promise.then(function () {
+return ocrCanvas(c, lang, function (p) {
+setStatus((fileIdx + (pageNo - 1 + p) / total) / fileCount,
+"正在识别 " + file.name + " 第 " + pageNo + "/" + total + " 页… " + Math.round(p * 100) + "%");
+});
+}).then(function (t) { pages.push(t);});
+});
+});
+});
+})(i);
+}
+return chain.then(function () { return pages.join("\n");});
+});
+}
+
+function processImage(file, lang, fileIdx, fileCount) {
+return imageFileToCanvas(file).then(function (canvas) {
+return ocrCanvas(canvas, lang, function (p) {
+setStatus((fileIdx + p) / fileCount, "正在识别 " + file.name + " … " + Math.round(p * 100) + "%");
+});
+});
+}
+
+function handleFiles(files) {
+if (state.busy ||!files ||!files.length) return;
+var list = Array.prototype.slice.call(files).filter(function (f) {
+return f.type.indexOf("image/") === 0 || f.type === "application/pdf" || /\.pdf$/i.test(f.name);
+});
+if (!list.length) { toast("没有可处理的文件，请选图片或 PDF"); return;}
+state.busy = true;
+var lang = $("langSel").value;
+var listEl = $("fileList");
+listEl.innerHTML = "";
+setStatus(0, "准备识别，共 " + list.length + " 个文件…");
+ensureTesseract().then(function () {
+setStatus(0, "正在加载识别组件（首次较慢）…");
+var results = [];
+var chain = Promise.resolve();
+list.forEach(function (f, idx) {
+chain = chain.then(function () {
+var isPdf = f.type === "application/pdf" || /\.pdf$/i.test(f.name);
+var job = isPdf? processPdf(f, lang, idx, list.length): processImage(f, lang, idx, list.length);
+return job.then(function (text) {
+results.push(text || "");
+var row = document.createElement("div");
+row.innerHTML = "<span></span><span></span>";
+row.children[0].textContent = f.name;
+row.children[1].textContent = "完成 · " + (text || "").replace(/\s/g, "").length + " 字";
+listEl.appendChild(row);
+}).catch(function (err) {
+results.push("");
+var row = document.createElement("div");
+row.innerHTML = "<span></span><span style='color:var(--err)'></span>";
+row.children[0].textContent = f.name;
+row.children[1].textContent = "失败，可重试或直接粘贴歌词";
+listEl.appendChild(row);
+});
+});
+});
+return chain.then(function () { return results;});
+}).then(function (results) {
+killWorker();
+var joined = results.filter(function (t) { return t && t.trim();}).join("\n\n");
+if (joined) {
+var ta = $("lyricText");
+var cur = ta.value.replace(/\s+$/, "");
+ta.value = cur? cur + "\n\n" + joined.trim(): joined.trim();
+refresh();
+// 歌名为空时，用第一个文件名顶上
+if (!$("titleInput").value.trim() && list.length) {
+$("titleInput").value = list[0].name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+}
+setStatus(1, "识别完成，请在第 2 步对照原谱校对。", "ok");
+} else {
+setStatus(1, "没识别出文字。可以换一张更清晰的谱面，或直接在第 2 步粘贴歌词。", "err");
+}
+}).catch(function () {
+killWorker();
+setStatus(1, "识别组件加载失败，请重试；也可以直接在第 2 步粘贴歌词。", "err");
+}).then(function () {
+state.busy = false;
+});
+}
+
+/* ---------- 智能清理 ---------- */
+var NOTATION_RE = /[0-9.·・'’\-_—–=|\/\\():：*×#]/;
+function isNotationLine(line) {
+var s = line.replace(/\s/g, "");
+if (!s) return false;
+var cjk = 0, notation = 0;
+for (var i = 0; i < s.length; i++) {
+var ch = s.charAt(i);
+if (/[\u3400-\u9fff]/.test(ch)) cjk++;
+else if (NOTATION_RE.test(ch)) notation++;
+}
+return (cjk / s.length) < 0.35 && (notation / s.length) >= 0.5;
+}
+var PUNCT_RE = /[，。、；：？！·・…—–「」『』（）【】《》〈〉“”‘’"'\.,;:!\?\(\)\[\]\{\}<>\/\\|@#\$%\^&\*\+=~`_-]/g;
+function cleanLyrics(text) {
+var dropNotation = $("optNotation").getAttribute("aria-pressed") === "true";
+var stripEdges = $("optEdges").getAttribute("aria-pressed") === "true";
+var fixSpaces = $("optSpaces").getAttribute("aria-pressed") === "true";
+var stripPunct = $("optPunct").getAttribute("aria-pressed") === "true";
+var lines = text.replace(/\r\n?/g, "\n").split("\n");
+var out = [];
+lines.forEach(function (raw) {
+var line = raw.replace(/[\t\u3000]+/g, " ").replace(/ +/g, " ").trim();
+if (line && dropNotation && isNotationLine(line)) return;
+if (line && stripEdges) {
+line = line.replace(/^[\s0-9.·・'’\-_—–=|\/\\():：*]+/, "").replace(/[\s0-9.·・'’\-_—–=|\/\\():：*]+$/, "").trim();
+if (!line) return;
+}
+if (line && stripPunct) {
+line = line.replace(PUNCT_RE, "").replace(/ +/g, " ").trim();
+if (!line) return;
+}
+out.push(line);
+});
+var res = out.join("\n");
+if (fixSpaces) {
+// 只去汉字之间的空格，以及汉字与中文标点相邻处的空格；
+// 英文、韩文单词之间的空格一律保留，不动。
+res = res.replace(/([\u3400-\u9fff]) (?=[\u3400-\u9fff])/g, "$1");
+res = res.replace(/([\u3400-\u9fff]) (?=[，。；：！？、）】」』])/g, "$1");
+res = res.replace(/([，。；：！？、（【「『]) (?=[\u3400-\u9fff])/g, "$1");
+}
+res = res.replace(/\n{3,}/g, "\n\n");
+return res.replace(/^\n+|\n+$/g, "");
+}
+
+/* ---------- 拆页 ---------- */
+var LABEL_RE = /^[（(\[【]?\s*(主歌|副歌|导歌|桥段|桥|尾声|结尾|前奏|间奏|序曲|重复|Verse|Chorus|Bridge|Pre[-\s]?Chorus|Intro|Outro|Tag|Refrain)\s*[一二三四五六七八九十0-9]*\s*[）)\]】]?\s*[:：]?$/i;
+function isLabelLine(line) { return LABEL_RE.test(line.trim());}
+
+function buildSlides(text) {
+var rawLines = text.replace(/\r\n?/g, "\n").split("\n");
+var sections = [];
+var cur = { label: null, lines: []};
+function pushCur() {
+if (cur.lines.length || cur.label) sections.push(cur);
+cur = { label: null, lines: []};
+}
+rawLines.forEach(function (raw) {
+var line = raw.trim();
+if (!line) {
+if (state.mode === "section") pushCur();
+return;
+}
+if (state.labelAsTag && isLabelLine(line)) {
+if (cur.lines.length) pushCur();
+cur.label = line.replace(/^[（(\[【]\s*/, "").replace(/\s*[）)\]】]\s*[:：]?$/, "");
+return;
+}
+cur.lines.push(line);
+});
+pushCur();
+var slides = [];
+sections.forEach(function (sec) {
+if (!sec.lines.length) return;
+chunkLines(sec.lines).forEach(function (chunk) {
+slides.push({ label: sec.label, lines: chunk});
+});
+});
+return slides;
+}
+
+function chunkLines(lines) {
+if (state.pageBy !== "chars") {
+var out = [];
+for (var i = 0; i < lines.length; i += state.perSlide) out.push(lines.slice(i, i + state.perSlide));
+return out;
+}
+var chunks = [], cur = [], count = 0;
+lines.forEach(function (l) {
+var c = l.replace(/\s/g, "").length;
+if (cur.length && count + c > state.maxChars) { chunks.push(cur); cur = []; count = 0;}
+cur.push(l);
+count += c;
+});
+if (cur.length) chunks.push(cur);
+return chunks;
+}
+
+function slideFontSize(items) {
+var longest = 0, weight = 0;
+items.forEach(function (it) {
+var f = it.k === "tr"? 0.82: (it.k === "tr2"? 0.76: (it.k === "py"? 0.5: 1));
+var len = it.t.length * f;
+if (len > longest) longest = len;
+weight += it.k === "main"? 1: (it.k === "tr"? 0.9: (it.k === "tr2"? 0.85: 0.6));
+});
+var size;
+if (longest <= 8) size = 27;
+else if (longest <= 12) size = 23;
+else if (longest <= 16) size = 20;
+else if (longest <= 21) size = 17;
+else if (longest <= 27) size = 15;
+else size = 14;
+if (weight >= 4) size -= 2;
+if (weight >= 5.5) size -= 1;
+return Math.max(12, Math.round(size * state.zoom));
+}
+
+function render() {
+var text = $("lyricText").value;
+var origSlides = buildSlides(text);
+var transformed = state.xfMode !== "none" && state.display && state.displayKey === keyOf(origSlides);
+var slides = transformed? state.display: origToDisplay(origSlides);
+state.slides = slides;
+var grid = $("slides");
+grid.innerHTML = "";
+slides.forEach(function (sl, idx) {
+var card = document.createElement("div");
+card.className = "slide";
+card.tabIndex = 0;
+card.setAttribute("role", "button");
+card.setAttribute("aria-label", "第 " + (idx + 1) + " 页，点击放大");
+var html = "";
+if (sl.label) html += '<div class="chip"></div>';
+html += '<div class="lines" style="font-size:' + slideFontSize(sl.items) + 'px"></div>';
+html += '<div class="num">' + (idx + 1) + " / " + slides.length + "</div>";
+card.innerHTML = html;
+if (sl.label) card.querySelector(".chip").textContent = sl.label;
+var linesEl = card.querySelector(".lines");
+sl.items.forEach(function (it) {
+var p = document.createElement("p");
+if (it.k && it.k !== "main") p.className = it.k;
+p.textContent = it.t;
+linesEl.appendChild(p);
+});
+card.addEventListener("click", function () { openLightbox(idx);});
+card.addEventListener("keydown", function (e) {
+if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLightbox(idx);}
+});
+grid.appendChild(card);
+});
+$("emptyState").style.display = slides.length? "none": "block";
+var chars = text.replace(/\s/g, "").length;
+var sections = text.split(/\n\s*\n/).filter(function (s) { return s.trim();}).length;
+var suffix = transformed? (state.xfMode === "translate"? " · 多语对照": " · 已加拼音"): "";
+$("stats").innerHTML = slides.length
+? "共 <b>" + slides.length + "</b> 页 · <b>" + sections + "</b> 段 · 歌词 <b>" + chars + "</b> 字（不含空格）" + suffix
+: "还没有歌词。";
+$("barInfo").innerHTML = "共 <b>" + slides.length + "</b> 页";
+$("downloadBtn").disabled =!slides.length;
+$("copyBtn").disabled =!slides.length;
+var xfHintEl = $("xfHint");
+if (xfHintEl) {
+if (state.xfMode === "none") xfHintEl.textContent = "现在是原文模式：预览和导出就是歌词原文。";
+else if (transformed) xfHintEl.textContent = state.xfMode === "translate"? "多语对照已生成：下方预览和导出文件里，每页原文在上、各语言译文依次在下。": "拼音已生成：下方预览和导出文件都带拼音。";
+else xfHintEl.textContent = "还没生成（或歌词、拆页设置刚改过）：点上面的按钮生成，生成前预览和导出仍是原文。";
+}
+}
+function refresh() { render();}
+
+/* ---------- 导出 ---------- */
+function exportText() {
+return state.slides.map(function (sl) { return sl.items.map(function (it) { return it.t;}).join("\n");}).join("\n\n") + "\n";
+}
+function download() {
+if (!state.slides.length) return;
+var title = $("titleInput").value.trim() || "歌词";
+var blob = new Blob(["\ufeff" + exportText()], { type: "text/plain;charset=utf-8"});
+var a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = title + ".txt";
+document.body.appendChild(a);
+a.click();
+setTimeout(function () { URL.revokeObjectURL(a.href); a.remove();}, 400);
+toast("已下载。在 ProPresenter 里选「文件 → 导入 → 文本」选这个文件即可");
+}
+function copyText() {
+if (!state.slides.length) return;
+var txt = exportText();
+function done() { toast("已复制，去 ProPresenter 里粘贴即可");}
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(txt).then(done).catch(function () { fallbackCopy(txt); done();});
+} else { fallbackCopy(txt); done();}
+}
+function fallbackCopy(txt) {
+var ta = document.createElement("textarea");
+ta.value = txt;
+ta.style.position = "fixed"; ta.style.opacity = "0";
+document.body.appendChild(ta);
+ta.select();
+try { document.execCommand("copy");} catch (e) {}
+ta.remove();
+}
+
+/* ---------- 放大查看 ---------- */
+var lbIndex = 0;
+function openLightbox(idx) {
+if (!state.slides.length) return;
+lbIndex = idx;
+$("lightbox").classList.add("open");
+drawLightbox();
+}
+function closeLightbox() { $("lightbox").classList.remove("open");}
+function drawLightbox() {
+var sl = state.slides[lbIndex];
+if (!sl) return;
+var chip = $("lbChip");
+if (sl.label) { chip.style.display = "block"; chip.textContent = sl.label;}
+else chip.style.display = "none";
+var box = $("lbLines");
+box.innerHTML = "";
+sl.items.forEach(function (it) {
+var p = document.createElement("p");
+if (it.k && it.k !== "main") p.className = it.k;
+p.textContent = it.t;
+box.appendChild(p);
+});
+var stage = $("lbSlide");
+var w = stage.clientWidth, h = stage.clientHeight;
+var longest = 0, weight = 0;
+sl.items.forEach(function (it) {
+var f = it.k === "tr"? 0.82: (it.k === "tr2"? 0.76: (it.k === "py"? 0.5: 1));
+var len = it.t.length * f;
+if (len > longest) longest = len;
+weight += it.k === "main"? 1: (it.k === "tr"? 0.9: (it.k === "tr2"? 0.85: 0.6));
+});
+var fs = Math.min(w * 0.92 / Math.max(1, longest * 1.22), (h * 0.8) / Math.max(1, weight * 1.45), 96);
+box.style.fontSize = Math.max(20, Math.floor(fs)) + "px";
+$("lbCount").textContent = (lbIndex + 1) + " / " + state.slides.length;
+$("lbPrev").disabled = lbIndex <= 0;
+$("lbNext").disabled = lbIndex >= state.slides.length - 1;
+}
+
+/* ---------- 事件 ---------- */
+var dz = $("dropzone"), fi = $("fileInput");
+dz.addEventListener("click", function () { fi.click();});
+dz.addEventListener("keydown", function (e) {
+if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fi.click();}
+});
+fi.addEventListener("change", function () { handleFiles(fi.files); fi.value = "";});
+["dragenter", "dragover"].forEach(function (ev) {
+dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("drag");});
+});
+["dragleave", "drop"].forEach(function (ev) {
+dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("drag");});
+});
+dz.addEventListener("drop", function (e) {
+if (e.dataTransfer) handleFiles(e.dataTransfer.files);
+});
+document.addEventListener("paste", function (e) {
+var t = e.target;
+if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT" || t.isContentEditable)) return;
+var cd = e.clipboardData || {};
+if (cd.files && cd.files.length) { setImportTab("sheet"); handleFiles(cd.files); return;}
+var txt = "";
+try { txt = cd.getData("text/plain") || "";} catch (err) {}
+if (txt && txt.trim()) {
+setImportTab("paste");
+$("pasteBox").value = txt;
+toast("已把剪贴板里的歌词填进来，点「载入并拆页」继续");
+}
+});
+
+/* ---------- 导入方式切换 ---------- */
+function setImportTab(which) {
+var paste = which === "paste";
+$("tabPaste").setAttribute("aria-pressed", paste? "true": "false");
+$("tabSheet").setAttribute("aria-pressed", paste? "false": "true");
+$("panelPaste").hidden =!paste;
+$("panelSheet").hidden = paste;
+}
+$("tabPaste").addEventListener("click", function () { setImportTab("paste");});
+$("tabSheet").addEventListener("click", function () { setImportTab("sheet");});
+
+$("loadPasteBtn").addEventListener("click", function () {
+var t = $("pasteBox").value.replace(/\s+$/, "");
+if (!t.trim()) { toast("先把歌词粘贴到上面的框里"); $("pasteBox").focus(); return;}
+var ta = $("lyricText");
+var cur = ta.value.replace(/\s+$/, "");
+ta.value = cur? cur + "\n\n" + t.trim(): t.trim();
+refresh();
+$("lyricText").scrollIntoView({ behavior: "smooth", block: "start"});
+toast("已载入到第 2 步，校对后在第 3 步调拆页");
+});
+$("clipBtn").addEventListener("click", function () {
+if (navigator.clipboard && navigator.clipboard.readText) {
+navigator.clipboard.readText().then(function (txt) {
+if (txt && txt.trim()) { $("pasteBox").value = txt; toast("已粘贴，点「载入并拆页」");}
+else toast("剪贴板里没有文字");
+}).catch(function () {
+$("pasteBox").focus();
+toast("浏览器不让直接读取剪贴板，已定位到输入框，长按或按 Ctrl+V 粘贴");
+});
+} else {
+$("pasteBox").focus();
+toast("这个浏览器不支持一键粘贴，请长按输入框或按 Ctrl+V");
+}
+});
+$("clearPasteBtn").addEventListener("click", function () { $("pasteBox").value = ""; $("pasteBox").focus();});
+$("txtBtn").addEventListener("click", function () { $("txtInput").click();});
+$("txtInput").addEventListener("change", function () {
+var f = $("txtInput").files && $("txtInput").files[0];
+$("txtInput").value = "";
+if (!f) return;
+var done = function (txt) {
+$("pasteBox").value = txt || "";
+if (!$("titleInput").value.trim()) {
+$("titleInput").value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+}
+toast("已打开 " + f.name + "，点「载入并拆页」");
+};
+if (f.text) { f.text().then(done).catch(function () { toast("文件读取失败，换个文件试试");});}
+else {
+var r = new FileReader();
+r.onload = function () { done(String(r.result || ""));};
+r.onerror = function () { toast("文件读取失败，换个文件试试");};
+r.readAsText(f);
+}
+});
+
+$("lyricText").addEventListener("input", refresh);
+$("titleInput").addEventListener("input", function () {});
+$("cleanBtn").addEventListener("click", function () {
+var ta = $("lyricText");
+if (!ta.value.trim()) { toast("先导入或粘贴歌词，再清理"); return;}
+ta.value = cleanLyrics(ta.value);
+refresh();
+toast("清理完成，请再对照原谱看一遍");
+});
+["optNotation", "optEdges", "optSpaces", "optPunct"].forEach(function (id) {
+$(id).addEventListener("click", function () { pillToggle($(id));});
+});
+$("clearBtn").addEventListener("click", function () {
+$("lyricText").value = "";
+$("titleInput").value = "";
+refresh();
+});
+$("demoBtn").addEventListener("click", function () {
+$("titleInput").value = "奇异恩典";
+$("lyricText").value = [
+"主歌一",
+"奇异恩典，何等甘甜",
+"我罪已得赦免",
+"前我失丧，今被寻回",
+"瞎眼今得看见",
+"",
+"主歌二",
+"如此恩典，使我敬畏",
+"使我心得安慰",
+"初信之时，即蒙恩惠",
+"真是何等宝贵",
+"",
+"主歌三",
+"经过许多危险试炼",
+"我已安然经过",
+"靠主恩典，安全不怕",
+"更引导我归家"
+].join("\n");
+refresh();
+toast("已载入示例《奇异恩典》，可以试着改设置看效果");
+});
+
+$("perMinus").addEventListener("click", function () {
+if (state.perSlide > 1) { state.perSlide--; $("perVal").textContent = state.perSlide; refresh();}
+});
+$("perPlus").addEventListener("click", function () {
+if (state.perSlide < 6) { state.perSlide++; $("perVal").textContent = state.perSlide; refresh();}
+});
+$("byLines").addEventListener("click", function () {
+state.pageBy = "lines"; segSet($("byLines"), $("byChars"));
+$("perRow").style.display = "";
+$("charRow").style.display = "none";
+refresh();
+});
+$("byChars").addEventListener("click", function () {
+state.pageBy = "chars"; segSet($("byChars"), $("byLines"));
+$("perRow").style.display = "none";
+$("charRow").style.display = "";
+refresh();
+});
+$("charMinus").addEventListener("click", function () {
+if (state.maxChars > 6) { state.maxChars -= 2; $("charVal").textContent = state.maxChars; refresh();}
+});
+$("charPlus").addEventListener("click", function () {
+if (state.maxChars < 80) { state.maxChars += 2; $("charVal").textContent = state.maxChars; refresh();}
+});
+$("modeSection").addEventListener("click", function () {
+state.mode = segSet($("modeSection"), $("modeFlow"), "section"); refresh();
+});
+$("modeFlow").addEventListener("click", function () {
+state.mode = segSet($("modeFlow"), $("modeSection"), "flow"); refresh();
+});
+$("labelAsTag").addEventListener("click", function () {
+state.labelAsTag = true; segSet($("labelAsTag"), $("labelAsText")); refresh();
+});
+$("labelAsText").addEventListener("click", function () {
+state.labelAsTag = false; segSet($("labelAsText"), $("labelAsTag")); refresh();
+});
+$("zoomRange").addEventListener("input", function () {
+state.zoom = $("zoomRange").value / 100;
+$("zoomVal").textContent = $("zoomRange").value + "%";
+refresh();
+});
+
+$("downloadBtn").addEventListener("click", download);
+$("copyBtn").addEventListener("click", copyText);
+
+$("lbClose").addEventListener("click", closeLightbox);
+$("lbPrev").addEventListener("click", function () { if (lbIndex > 0) { lbIndex--; drawLightbox();}});
+$("lbNext").addEventListener("click", function () { if (lbIndex < state.slides.length - 1) { lbIndex++; drawLightbox();}});
+$("lightbox").addEventListener("click", function (e) { if (e.target === $("lightbox")) closeLightbox();});
+document.addEventListener("keydown", function (e) {
+if (!$("lightbox").classList.contains("open")) return;
+if (e.key === "Escape") closeLightbox();
+if (e.key === "ArrowLeft" && lbIndex > 0) { lbIndex--; drawLightbox();}
+if (e.key === "ArrowRight" && lbIndex < state.slides.length - 1) { lbIndex++; drawLightbox();}
+});
+window.addEventListener("resize", function () {
+if ($("lightbox").classList.contains("open")) drawLightbox();
+});
+
+/* ---------- 翻译 / 拼音 ---------- */
+var MAX_LANGS = 4;
+function selectedLangCodes() {
+return state.transLangs.map(function (l) { return l.code;}).join(",");
+}
+function renderLangChips() {
+var box = $("langChips");
+box.innerHTML = "";
+state.transLangs.forEach(function (lg, i) {
+var chip = document.createElement("span");
+chip.className = "langchip";
+var name = document.createElement("span");
+name.textContent = lg.name;
+var x = document.createElement("button");
+x.type = "button";
+x.textContent = "✕";
+x.setAttribute("aria-label", "去掉 " + lg.name);
+x.addEventListener("click", function () {
+state.transLangs.splice(i, 1);
+renderLangChips();
+refresh();
+});
+chip.appendChild(name);
+chip.appendChild(x);
+box.appendChild(chip);
+});
+}
+function addLang() {
+var custom = $("transLangCustom").value.trim();
+var code, name;
+if (custom) { code = custom; name = custom;}
+else {
+var sel = $("transLang");
+code = sel.value;
+name = sel.options[sel.selectedIndex].text;
+}
+var dup = state.transLangs.some(function (l) { return l.code === code;});
+if (dup) { toast("这种语言已经在已选列表里了"); return;}
+if (state.transLangs.length >= MAX_LANGS) { toast("最多选 " + MAX_LANGS + " 种语言，再多了一页放不下"); return;}
+state.transLangs.push({ code: code, name: name});
+$("transLangCustom").value = "";
+renderLangChips();
+refresh();
+}
+function keyOf(origSlides) {
+var params = "none";
+if (state.xfMode === "translate") params = "tr:" + selectedLangCodes();
+else if (state.xfMode === "pinyin") params = "py:" + state.pyStyle;
+return state.xfMode + "|" + params + "|" + JSON.stringify(origSlides);
+}
+function origToDisplay(slides) {
+return slides.map(function (sl) {
+return { label: sl.label, items: sl.lines.map(function (l) { return { t: l, k: "main"};})};
+});
+}
+function setTransStatus(pct, msg, kind) {
+var st = $("transStatus");
+st.classList.add("show");
+if (typeof pct === "number") $("transBarFill").style.width = Math.round(pct * 100) + "%";
+var m = $("transMsg");
+m.textContent = msg || "";
+m.className = "msg" + (kind? " " + kind: "");
+}
+function setPyStatus(pct, msg, kind) {
+var st = $("pyStatus");
+st.classList.add("show");
+if (typeof pct === "number") $("pyBarFill").style.width = Math.round(pct * 100) + "%";
+var m = $("pyMsg");
+m.textContent = msg || "";
+m.className = "msg" + (kind? " " + kind: "");
+}
+function guessSrc(text) {
+if (/[\uac00-\ud7a3]/.test(text)) return "ko";
+if (/[\u3040-\u30ff]/.test(text)) return "ja";
+if (/[\u3400-\u9fff]/.test(text)) return "zh-CN";
+if (/[\u0400-\u04ff]/.test(text)) return "ru";
+if (/[\u0600-\u06ff]/.test(text)) return "ar";
+if (/[\u0590-\u05ff]/.test(text)) return "he";
+if (/[\u0e00-\u0e7f]/.test(text)) return "th";
+return "en";
+}
+function googleTranslate(text, tl) {
+var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + encodeURIComponent(tl) + "&dt=t&q=" + encodeURIComponent(text);
+return fetch(url).then(function (r) {
+if (!r.ok) throw new Error("http " + r.status);
+return r.json();
+}).then(function (d) {
+if (!d || !d[0]) throw new Error("bad response");
+var out = "";
+d[0].forEach(function (seg) { if (seg && seg[0]) out += seg[0];});
+if (!out.trim()) throw new Error("empty");
+return out;
+});
+}
+function mymemoryTranslate(text, tl) {
+var mmTl = tl === "fil"? "tl": tl;
+var url = "https://api.mymemory.translated.net/get?q=" + encodeURIComponent(text) + "&langpair=" + encodeURIComponent(guessSrc(text) + "|" + mmTl);
+return fetch(url).then(function (r) { return r.json();}).then(function (d) {
+var t = d && d.responseData && d.responseData.translatedText;
+if (!t || /QUERY LENGTH LIMIT|INVALID EMAIL|NO QUERY SPECIFIED/i.test(t)) throw new Error("mymemory failed");
+return t;
+});
+}
+function translateText(text, tl) {
+return googleTranslate(text, tl).catch(function () { return mymemoryTranslate(text, tl);});
+}
+function translateSlideLines(lines, tl) {
+return translateText(lines.join("\n"), tl).then(function (t) {
+var parts = t.replace(/\r/g, "").split("\n");
+if (parts.length === lines.length) return parts.map(function (s) { return s.trim();});
+var res = [];
+var c2 = Promise.resolve();
+lines.forEach(function (l) {
+c2 = c2.then(function () { return translateText(l, tl).then(function (x) { res.push(x.trim());});});
+});
+return c2.then(function () { return res;});
+});
+}
+function generateTranslation() {
+if (state.xfBusy) return;
+var orig = buildSlides($("lyricText").value);
+if (!orig.length) { toast("先在第 2 步填好歌词，再翻译"); return;}
+var langs = state.transLangs.slice();
+if (!langs.length) { toast("先添加至少一种目标语言"); return;}
+if (typeof navigator !== "undefined" && "onLine" in navigator && !navigator.onLine) { setTransStatus(1, "翻译需要联网：当前没有网络连接，请联网后再试；预览和导出仍是原文。", "err"); return;}
+var key = keyOf(orig);
+state.xfBusy = true;
+var btn = $("translateBtn");
+btn.disabled = true;
+var totalSteps = orig.length * langs.length;
+var step = 0;
+setTransStatus(0, "正在翻译，共 " + orig.length + " 页 × " + langs.length + " 种语言…");
+var display = [];
+var chain = Promise.resolve();
+orig.forEach(function (sl, pageIdx) {
+chain = chain.then(function () {
+var blocks = [];
+var c = Promise.resolve();
+langs.forEach(function (lg, li) {
+c = c.then(function () {
+step++;
+setTransStatus((step - 1) / totalSteps, "正在翻译第 " + (pageIdx + 1) + " / " + orig.length + " 页（" + lg.name + "）…");
+return translateSlideLines(sl.lines, lg.code).then(function (parts) { blocks[li] = parts;});
+});
+});
+return c.then(function () {
+var items = sl.lines.map(function (l) { return { t: l, k: "main"};});
+blocks.forEach(function (parts, li) {
+parts.forEach(function (p) { if (p) items.push({ t: p, k: li === 0? "tr": "tr2"});});
+});
+display.push({ label: sl.label, items: items});
+});
+});
+});
+chain.then(function () {
+state.display = display;
+state.displayKey = key;
+setTransStatus(1, "翻译完成：每页原文在上、各语言译文依次在下，请对照原文校对一遍。", "ok");
+refresh();
+toast("多语对照已生成");
+}).catch(function () {
+setTransStatus(1, "翻译需要联网：当前无法连接翻译服务，请联网后再试；预览和导出仍是原文。", "err");
+}).then(function () {
+state.xfBusy = false;
+btn.disabled = false;
+});
+}
+
+function ensurePinyinLib() {
+if (window.pinyinPro && window.pinyinPro.pinyin) return Promise.resolve();
+return loadScript("vendor/pinyin-pro.js").then(function () {
+if (!(window.pinyinPro && window.pinyinPro.pinyin)) throw new Error("pinyin lib missing");
+});
+}
+var HAN_RE = /[\u3400-\u9fff]/;
+function pinyinLine(text) {
+if (!HAN_RE.test(text)) return "";
+var arr = null;
+try { arr = window.pinyinPro.pinyin(text, { toneType: "symbol", type: "array"});} catch (e) {}
+if (!arr || arr.length !== text.length) {
+try {
+var s = window.pinyinPro.pinyin(text, { toneType: "symbol"});
+return s.replace(/ +/g, " ").replace(/ ([，。；：！？、）】」』])/g, "$1").trim();
+} catch (e) { return "";}
+}
+var out = "";
+for (var i = 0; i < text.length; i++) {
+var ch = text.charAt(i);
+if (HAN_RE.test(ch)) {
+if (out && out.charAt(out.length - 1) !== " ") out += " ";
+out += arr[i] + " ";
+} else out += ch;
+}
+return out.replace(/ +/g, " ").replace(/ ([，。；：！？、）】」』])/g, "$1").replace(/([（【「『]) /g, "$1").trim();
+}
+function generatePinyin() {
+if (state.xfBusy) return;
+var orig = buildSlides($("lyricText").value);
+if (!orig.length) { toast("先在第 2 步填好歌词，再加拼音"); return;}
+var key = keyOf(orig);
+state.xfBusy = true;
+var btn = $("pinyinBtn");
+btn.disabled = true;
+setPyStatus(0, "正在加载拼音词库并生成…");
+ensurePinyinLib().then(function () {
+var display = orig.map(function (sl) {
+var items = [];
+sl.lines.forEach(function (l) {
+var py = pinyinLine(l);
+if (state.pyStyle === "paren") items.push({ t: py? l + "（" + py + "）": l, k: "main"});
+else {
+if (py) items.push({ t: py, k: "py"});
+items.push({ t: l, k: "main"});
+}
+});
+return { label: sl.label, items: items};
+});
+state.display = display;
+state.displayKey = key;
+setPyStatus(1, "拼音已生成。", "ok");
+refresh();
+toast("拼音已生成");
+}).catch(function () {
+setPyStatus(1, "拼音词库加载失败，请重试；预览和导出仍是原文。", "err");
+}).then(function () {
+state.xfBusy = false;
+btn.disabled = false;
+});
+}
+
+function setXfMode(mode) {
+state.xfMode = mode;
+$("xfNone").setAttribute("aria-pressed", mode === "none"? "true": "false");
+$("xfTranslate").setAttribute("aria-pressed", mode === "translate"? "true": "false");
+$("xfPinyin").setAttribute("aria-pressed", mode === "pinyin"? "true": "false");
+$("panelTranslate").hidden = mode !== "translate";
+$("panelPinyin").hidden = mode !== "pinyin";
+refresh();
+}
+$("xfNone").addEventListener("click", function () { setXfMode("none");});
+$("xfTranslate").addEventListener("click", function () { setXfMode("translate");});
+$("xfPinyin").addEventListener("click", function () { setXfMode("pinyin");});
+$("addLangBtn").addEventListener("click", addLang);
+$("translateBtn").addEventListener("click", generateTranslation);
+$("pinyinBtn").addEventListener("click", generatePinyin);
+$("pyAbove").addEventListener("click", function () {
+state.pyStyle = "above"; segSet($("pyAbove"), $("pyParen")); refresh();
+});
+$("pyParen").addEventListener("click", function () {
+state.pyStyle = "paren"; segSet($("pyParen"), $("pyAbove")); refresh();
+});
+
+renderLangChips();
+render();
+</script>
+</body>
+</html>
