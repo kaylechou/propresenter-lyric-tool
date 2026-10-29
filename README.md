@@ -47,6 +47,10 @@
 - 导出三选一：`txt`（纯文本，不带样式）、`.pro`（ProPresenter 7）、`.pro6`（ProPresenter 6）
 - 段落名作分组，标签颜色一并写入
 
+### 完整使用说明
+
+![完整使用说明](docs/images/howto-guide.png)
+
 ## 下载（当前版本 1.0.0）
 
 | 包 | 适用 | 用法 |
