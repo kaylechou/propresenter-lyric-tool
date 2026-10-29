@@ -8,6 +8,8 @@
  3. Tesseract worker / core / 语言数据全部指向本地（gzip 关掉，用明文 .traineddata）；
  4. 文案里“首次联网加载组件/词库”改为本机内置；
  5. 翻译加离线提示：无网时直接提示“翻译需要联网”，接口失败也显示同样含义。
+2026-10-29 适配新版网页：对照版状态函数改名 setXfStatus，翻译开关独立
+（state.useTranslate，拼音可单独离线生成），翻译/拼音失败文案合并为一条。
 """
 import io
 import sys
@@ -60,11 +62,10 @@ logger: function (m) {'''),
      '识别组件加载失败，请重试；也可以直接在第 2 步粘贴歌词。'),
     ('首次生成要联网加载拼音词库。多音字按常用读音注音',
      '拼音词库已内置本机，无需联网。多音字按常用读音注音'),
-    ('拼音词库加载失败，请检查网络后重试；预览和导出仍是原文。',
-     '拼音词库加载失败，请重试；预览和导出仍是原文。'),
-    # 8. 翻译离线提示：失败文案明确说“翻译需要联网”
-    ('翻译失败，请检查网络后重试；预览和导出仍是原文。',
-     '翻译需要联网：当前无法连接翻译服务，请联网后再试；预览和导出仍是原文。'),
+    ('生成失败，请检查网络后重试（翻译和首次加载拼音词库都要联网）；预览和导出仍是原文。',
+     '生成失败，请检查网络后重试（翻译需要联网，拼音词库已内置本机）；预览和导出仍是原文。'),
+    # 8. 翻译失败文案已与拼音合并为一条（见上一条），桌面版只需改括号说明；
+    # 无网时的前置拦截见步骤 9（onLine guard）。
 ]
 
 for old, new in repls:
@@ -75,11 +76,11 @@ for old, new in repls:
     s = s.replace(old, new)
     print("ok x%d: %s" % (n, old[:60].replace("\n", "\\n")))
 
-# 9. 翻译函数开头加 navigator.onLine 前置检查
-anchor = 'if (!langs.length) { toast("先添加至少一种目标语言"); return;}'
+# 9. 翻译函数开头加 navigator.onLine 前置检查（仅翻译开启时拦截，拼音可离线）
+anchor = 'if (state.useTranslate &&!langs.length) { toast("先添加至少一种目标语言"); return;}'
 n = s.count(anchor)
 assert n == 1, "translate langs anchor count=%d" % n
-s = s.replace(anchor, anchor + '\nif (typeof navigator !== "undefined" && "onLine" in navigator && !navigator.onLine) { setTransStatus(1, "翻译需要联网：当前没有网络连接，请联网后再试；预览和导出仍是原文。", "err"); return;}')
+s = s.replace(anchor, anchor + '\nif (state.useTranslate && typeof navigator !== "undefined" && "onLine" in navigator && !navigator.onLine) { setXfStatus(1, "翻译需要联网：当前没有网络连接，请联网后再试；预览和导出仍是原文。", "err"); return;}')
 print("ok: navigator.onLine guard added")
 
 with io.open(DST, "w", encoding="utf-8") as f:
