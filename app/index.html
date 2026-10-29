@@ -170,6 +170,11 @@ border:none;background:var(--surface-2);color:var(--ink);
 .stepper .val{min-width:74px;text-align:center;font-weight:900;font-size:17px;}
 input[type="range"]{accent-color:var(--accent);width:170px;}
 .zoom-val{font-weight:700;font-size:14px;}
+input[type="color"]{width:46px;height:36px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer;}
+.lblrows{display:flex;flex-wrap:wrap;gap:10px 20px;}
+.lblrow{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;}
+body.fmt-nobold .slide .lines,body.fmt-nobold .lb-slide .lines{font-weight:500;}
+body.fmt-nobold .pyunit .ch{font-weight:600;}
 
 /* slides */
 .stats{font-size:14.5px;color:var(--muted);margin:0 0 14px 42px;}
@@ -189,7 +194,7 @@ display:flex;align-items:center;justify-content:center;padding:12% 7% 9%;
 .slide .lines p{margin:0;}
 .slide .chip{
 position:absolute;top:8px;left:10px;font-size:11.5px;font-weight:700;
-color:#e9c767;border:1px solid rgba(233,199,103,.55);border-radius:5px;padding:1px 7px;
+color:#fff;border:none;border-radius:5px;padding:1px 7px;
 letter-spacing:.06em;
 }
 .slide .num{position:absolute;right:10px;bottom:7px;font-size:11px;color:rgba(255,255,255,.5);font-weight:500;}
@@ -199,6 +204,11 @@ letter-spacing:.06em;
 .lb-slide .lines p.py{font-size:.55em;font-weight:600;color:#e9c767;letter-spacing:.05em;}
 .lb-slide .lines p.tr{font-size:.82em;font-weight:700;opacity:.88;}
 .lb-slide .lines p.tr2{font-size:.76em;font-weight:700;opacity:.62;}
+.pyunit{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+.pyunit .cell{display:flex;flex-direction:column;align-items:center;padding:0 .13em;}
+.pyunit .cell.sp{width:.85em;padding:0;}
+.pyunit .ch{font-weight:900;line-height:1.3;}
+.pyunit .py{font-size:.38em;font-weight:600;color:#e9c767;letter-spacing:.03em;line-height:1.2;min-height:1.2em;white-space:nowrap;}
 .langchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:4px;}
 .langchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--gold);background:var(--gold-soft);color:var(--ink);border-radius:999px;padding:4px 6px 4px 12px;font-size:14px;font-weight:700;}
 .langchip button{border:none;background:transparent;color:var(--muted);font:inherit;font-size:14px;cursor:pointer;line-height:1;padding:3px 5px;border-radius:50%;}
@@ -217,6 +227,9 @@ padding:10px 16px calc(10px + env(safe-area-inset-bottom));
 .actionbar .inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .actionbar .info{font-size:14.5px;color:var(--muted);margin-right:auto;}
 .actionbar .info b{color:var(--ink);font-size:16px;}
+.fmt-wrap{display:inline-flex;align-items:center;gap:7px;}
+.fmt-label{font-size:14px;font-weight:700;white-space:nowrap;}
+.fmt-wrap select{max-width:210px;}
 .toast{
 position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);
 background:var(--ink);color:var(--bg);font-size:14.5px;font-weight:700;
@@ -239,8 +252,8 @@ border:1px solid rgba(255,255,255,.14);
 .lb-slide .lines{text-align:center;font-weight:900;line-height:1.45;}
 .lb-slide .lines p{margin:0;}
 .lb-slide .chip{
-position:absolute;top:14px;left:16px;font-size:14px;font-weight:700;color:#e9c767;
-border:1px solid rgba(233,199,103,.55);border-radius:6px;padding:2px 10px;
+position:absolute;top:14px;left:16px;font-size:14px;font-weight:700;color:#fff;
+border:none;border-radius:6px;padding:2px 10px;
 }
 .lb-nav{display:flex;align-items:center;gap:14px;color:#eee;font-size:15px;}
 .lb-nav button{
@@ -262,6 +275,8 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 .actionbar .inner{display:grid;grid-template-columns:1fr auto;gap:8px;}
 .actionbar .info{margin-right:0;align-self:center;font-size:13.5px;}
 .actionbar .btn{padding:8px 12px;font-size:14px;}
+.actionbar .fmt-wrap{grid-column:1 / -1;}
+.actionbar .fmt-wrap select{flex:1;max-width:none;}
 .actionbar #downloadBtn{grid-column:1 / -1;justify-content:center;padding:11px 12px;font-size:15.5px;}
 .wrap{padding-bottom:26px;}
 }
@@ -271,7 +286,7 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 <div class="wrap">
 <div class="lead">
 <h1>歌词转 ProPresenter</h1>
-<p>已经有现成歌词的，直接粘贴文本；只有歌谱的，把图片或 PDF 放进来识别。校对后按段落拆成一页一页，导出 ProPresenter 能直接导入的文本文件。只取歌词，不识别音符。分页之后还可以可选把歌词翻译成多语对照，或给中文歌词加拼音。</p>
+<p>已经有现成歌词的，直接粘贴文本；歌词在字幕文件（SRT / LRC / VTT）里的，也能直接导入，会自动去掉时间轴和序号、合并句间空行，并识别主歌 / 副歌结构整理成段落；只有歌谱的，把图片或 PDF 放进来识别。校对后按段落拆成一页一页，导出时三种格式任选其一：原来的 txt 文本、ProPresenter 7 专用 .pro、ProPresenter 6 专用 .pro6。只取歌词，不识别音符。分页之后还可以给歌词加多语翻译、加中文拼音——只选一样、两样都选、或都不选都可以。</p>
 <div class="rule"></div>
 </div>
 
@@ -293,20 +308,20 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 载入并拆页
 </button>
 <button class="btn ghost small" id="clipBtn" type="button">从剪贴板粘贴</button>
-<button class="btn ghost small" id="txtBtn" type="button">打开 .txt 文件</button>
+<button class="btn ghost small" id="txtBtn" type="button">打开歌词 / 字幕文件</button>
 <button class="btn ghost small" id="clearPasteBtn" type="button">清空</button>
 </div>
-<p class="hint" style="margin:10px 0 0;">格式要求：一行一句歌词，段落之间空一行；段落名（如「主歌一」「副歌」）单独占一行即可，第 3 步可设为标签、不进正文。在页面任意空白处按粘贴（Ctrl+V），歌词也会自动填进来。歌词在网页上的，从网页里复制文字粘贴到这里即可（受浏览器限制，工具不能直接打开网页抓取）。中、英、日、韩等多语言可以混排在同一首里，一起校对、一起导出到同一个文件。</p>
-<input type="file" id="txtInput" accept=".txt,.text,.md,text/plain" hidden />
+<p class="hint" style="margin:10px 0 0;">格式要求：一行一句歌词，段落之间空一行；段落名（如「主歌一」「副歌」）单独占一行即可，第 3 步可设为标签、不进正文。字幕文件（.srt / .lrc / .vtt / .ass）也可以：用「打开歌词 / 字幕文件」打开，或把字幕内容原样粘进来点「载入并拆页」，会自动去掉时间轴（如 00:05:47,100 --&gt; 00:05:49,580）和序号、合并两句之间的空行，并按停顿和重复段落识别出主歌 / 副歌，整理好直接进第 2 步。在页面任意空白处按粘贴（Ctrl+V），歌词也会自动填进来。歌词在网页上的，从网页里复制文字粘贴到这里即可（受浏览器限制，工具不能直接打开网页抓取）。中、英、日、韩等多语言可以混排在同一首里，一起校对、一起导出到同一个文件。</p>
+<input type="file" id="txtInput" accept=".txt,.text,.md,.srt,.lrc,.vtt,.ass,text/plain" hidden />
 </div>
 
 <div id="panelSheet" hidden>
 <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="选择或拖入歌谱文件">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
 <div class="dz-title">点这里选择文件，或把文件拖进来</div>
-<div class="dz-hint">支持图片（JPG / PNG 等）和 PDF，可一次选多个；手机上也可以直接粘贴剪贴板里的歌谱截图</div>
+<div class="dz-hint">支持图片（JPG / PNG 等）、PDF 和字幕文件（SRT / LRC / VTT），可一次选多个；手机上也可以直接粘贴剪贴板里的歌谱截图</div>
 </div>
-<input type="file" id="fileInput" accept="image/*,.pdf,application/pdf" multiple hidden />
+<input type="file" id="fileInput" accept="image/*,.pdf,application/pdf,.srt,.lrc,.vtt,.ass,.txt,text/plain" multiple hidden />
 <div class="row" style="margin-top:14px;">
 <label class="f-label" for="langSel">谱面文字</label>
 <select id="langSel">
@@ -331,7 +346,7 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 <!-- 2 校对 -->
 <section class="card">
 <div class="step-head"><div class="step-num">2</div><h2>校对歌词</h2></div>
-<p class="step-sub">粘贴或识别进来的歌词都汇集在这里，对照原谱改错字。空行分段落；段落名（如「主歌一」「副歌」）单独一行，第 3 步可设为标签不进正文。</p>
+<p class="step-sub">粘贴或识别进来的歌词都汇集在这里，对照原谱改错字。空行分段落；段落名（如「主歌一」「副歌」）单独一行，第 3 步可设为标签不进正文。从字幕文件来的歌词如果还带着时间轴、序号，或是每句之间都空一行，点「智能整理结构」：会去掉时间轴和序号、合并多余空行，并找出重复出现的段落标为「副歌」，其余段落依次标「主歌一」「主歌二」，整理完可以再手动改。</p>
 <div class="step-body">
 <div class="row">
 <label class="f-label" for="titleInput">歌名</label>
@@ -341,6 +356,10 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 <textarea id="lyricText" placeholder="识别出的歌词会出现在这里，也可以直接粘贴歌词……"></textarea>
 </div>
 <div class="toolbar">
+<button class="btn ghost small" id="organizeBtn" type="button">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 6v4"/><path d="M4 14h10"/><path d="M4 14v4"/><path d="M14 18h6"/></svg>
+智能整理结构
+</button>
 <button class="btn ghost small" id="cleanBtn" type="button">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>
 智能清理
@@ -358,8 +377,8 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 
 <!-- 3 拆页 -->
 <section class="card">
-<div class="step-head"><div class="step-num">3</div><h2>拆页设置</h2></div>
-<p class="step-sub">敬拜投影一般每页 2 行，年长者看大字可以选每页 1 行。点任意一页可以放大查看。</p>
+<div class="step-head"><div class="step-num">3</div><h2>拆页与样式设置</h2></div>
+<p class="step-sub">敬拜投影一般每页 2 行，年长者看大字可以选每页 1 行。点任意一页可以放大查看。歌词的字体、粗细、对齐、文字颜色和每个段落标签的颜色也能在这里改，预览和导出的 .pro / .pro6 文件会一起带上（txt 是纯文本，不带这些样式）。</p>
 <div class="step-body">
 <div class="ctl">
 <div class="group">
@@ -405,18 +424,69 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 <div class="hint">只影响这里的预览，不影响导出文件。</div>
 </div>
 </div>
+<div class="ctl" style="margin-top:22px;">
+<div class="group">
+<span class="g-label">歌词字体</span>
+<select id="fontSel" aria-label="歌词字体">
+<option value="yahei" selected>微软雅黑（无衬线）</option>
+<option value="hei">黑体</option>
+<option value="song">宋体</option>
+<option value="kai">楷体</option>
+<option value="arial">Arial</option>
+</select>
+<div class="hint">预览立即生效；导出 .pro / .pro6 时按这个字体名写入，投影电脑上装有该字体才会按它显示。</div>
+</div>
+<div class="group">
+<span class="g-label">歌词字号</span>
+<div class="row" style="gap:8px;">
+<input type="range" id="fontRange" min="80" max="140" step="5" value="100" />
+<span class="zoom-val" id="fontVal">100%</span>
+</div>
+<div class="hint">在自动排版的基础上整体放大或缩小，影响预览和导出文件。</div>
+</div>
+<div class="group">
+<span class="g-label">粗细与对齐</span>
+<div class="row" style="gap:8px;">
+<div class="seg" role="group" aria-label="粗细">
+<button type="button" id="boldOn" aria-pressed="true">粗体</button>
+<button type="button" id="boldOff" aria-pressed="false">常规</button>
+</div>
+<div class="seg" role="group" aria-label="对齐方式">
+<button type="button" id="alignL" aria-pressed="false">左对齐</button>
+<button type="button" id="alignC" aria-pressed="true">居中</button>
+<button type="button" id="alignR" aria-pressed="false">右对齐</button>
+</div>
+</div>
+<div class="hint">对齐改的是每页歌词的排版方向，默认居中。</div>
+</div>
+<div class="group">
+<span class="g-label">文字颜色</span>
+<div class="row" style="gap:8px;">
+<input type="color" id="textColor" value="#ffffff" aria-label="歌词文字颜色" />
+<span class="hint" style="margin-top:0;">歌词正文的颜色，默认白色；拼音仍是金色。</span>
+</div>
+</div>
+</div>
+<div style="margin-top:22px;">
+<span class="g-label" style="font-size:14px;font-weight:700;display:block;margin-bottom:8px;">段落标签颜色</span>
+<div class="lblrows" id="labelColorList"></div>
+<div class="row" style="margin-top:10px;">
+<button class="btn ghost small" id="labelColorReset" type="button">恢复默认标签颜色</button>
+<span class="hint" style="margin-top:0;">点颜色块就能改；主歌、副歌等每个标签各一份颜色，显示在预览页角上，并写入导出 .pro / .pro6 的分组颜色（和 ProPresenter 里一样）。</span>
+</div>
+</div>
 </div>
 </section>
 
 <!-- 4 翻译 / 拼音 -->
 <section class="card">
 <div class="step-head"><div class="step-num">4</div><h2>翻译 / 拼音（可选）</h2></div>
-<p class="step-sub">分页定好之后再做这一步：把每页歌词翻译成一种或多种语言、做成多语对照（原文在上，各语言译文依次在下），或者给中文歌词加拼音。生成结果会同步到第 5 步预览和导出的文件；改了歌词或拆页设置，需要重新生成。</p>
+<p class="step-sub">分页定好之后再做这一步。翻译和拼音是两个独立开关：只开一个、两个都开、两个都不开都行。两个都开时，每页原文在上、各语言译文依次排在下面，拼音紧跟在中文行的下（上）方。生成结果会同步到第 5 步预览和导出的文件；改了歌词或拆页设置，需要重新生成。</p>
 <div class="step-body">
-<div class="seg" role="group" aria-label="处理方式">
-<button type="button" id="xfNone" aria-pressed="true">不处理</button>
-<button type="button" id="xfTranslate" aria-pressed="false">多语翻译</button>
-<button type="button" id="xfPinyin" aria-pressed="false">加拼音</button>
+<div class="row">
+<button class="pill" type="button" id="tglTranslate" aria-pressed="false">多语翻译</button>
+<button class="pill" type="button" id="tglPinyin" aria-pressed="false">加拼音</button>
+<span class="hint">点开关打开或关掉，两项可以同时开。</span>
 </div>
 
 <div id="panelTranslate" hidden style="margin-top:16px;">
@@ -464,37 +534,39 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 <button class="btn ghost small" id="addLangBtn" type="button">添加语言</button>
 </div>
 <div class="langchips" id="langChips" aria-label="已选的目标语言"></div>
-<div class="row">
-<button class="btn primary small" id="translateBtn" type="button">生成多语对照</button>
-<span class="hint">分页不变，每页原文在上，各语言的译文依次排在下面。</span>
-</div>
-<p class="hint" style="margin:10px 0 0;">从列表选一种语言点「添加语言」，或在输入框里填语言代码再添加，最多选 4 种；点已选语言上的 ✕ 可以去掉。翻译需要联网，走在线翻译服务、逐页逐语言翻译，语言选得越多越慢。机器翻译请对照原文校对一遍，经文和专有名词尤其容易出错。</p>
-<div class="status" id="transStatus">
-<div class="bar"><i id="transBarFill"></i></div>
-<div class="msg" id="transMsg"></div>
-</div>
+<p class="hint" style="margin:10px 0 0;">从列表选一种语言点「添加语言」，或在输入框里填语言代码再添加，最多选 4 种；点已选语言上的 ✕ 可以去掉。选好后点下方「生成对照版」。分页不变，每页原文在上，各语言的译文依次排在下面。翻译需要联网，走在线翻译服务、逐页逐语言翻译，语言选得越多越慢。机器翻译请对照原文校对一遍，经文和专有名词尤其容易出错。</p>
 </div>
 
 <div id="panelPinyin" hidden style="margin-top:16px;">
 <div class="row">
 <span class="f-label">拼音位置</span>
 <div class="seg" role="group" aria-label="拼音位置">
-<button type="button" id="pyAbove" aria-pressed="true">拼音在上一行</button>
-<button type="button" id="pyParen" aria-pressed="false">拼音在括号内</button>
+<button type="button" id="pyBelow" aria-pressed="true">中文行下方一行</button>
+<button type="button" id="pyAbove" aria-pressed="false">中文行上方一行</button>
+<button type="button" id="pyParen" aria-pressed="false">行尾括号内</button>
 </div>
 </div>
 <div class="row">
-<button class="btn primary small" id="pinyinBtn" type="button">生成拼音</button>
-<span class="hint">只给汉字注音（带声调），英文、数字、标点原样保留。</span>
+<span class="f-label">声调</span>
+<div class="seg" role="group" aria-label="拼音声调">
+<button type="button" id="toneNo" aria-pressed="true">不带声调</button>
+<button type="button" id="toneYes" aria-pressed="false">带声调</button>
 </div>
-<p class="hint" style="margin:10px 0 0;">拼音词库已内置本机，无需联网。多音字按常用读音注音，像「乐、行、重」这类字，重要场合请再检查一遍。</p>
-<div class="status" id="pyStatus">
-<div class="bar"><i id="pyBarFill"></i></div>
-<div class="msg" id="pyMsg"></div>
+<span class="hint">只给汉字注音，英文、数字原样保留。</span>
 </div>
+<p class="hint" style="margin:10px 0 0;">位置选「下方一行」或「上方一行」时，预览里拼音逐字对齐在汉字下（上）方；导出的 ProPresenter txt 里，拼音是紧贴中文行的一行文字，音节之间用空格分隔。拼音词库已内置本机，无需联网。多音字按常用读音注音，像「乐、行、重」这类字，重要场合请再检查一遍。</p>
 </div>
 
-<p class="hint" id="xfHint" style="margin:12px 0 0;">现在是原文模式：预览和导出就是歌词原文。</p>
+<div class="row" id="genRow" style="display:none;margin-top:16px;">
+<button class="btn primary" id="genBtn" type="button">生成对照版</button>
+<span class="hint">按上面打开的开关一次生成，同步到第 5 步预览和导出文件。</span>
+</div>
+<div class="status" id="xfStatus">
+<div class="bar"><i id="xfBarFill"></i></div>
+<div class="msg" id="xfMsg"></div>
+</div>
+
+<p class="hint" id="xfHint" style="margin:12px 0 0;">现在翻译和拼音都没开：预览和导出就是歌词原文。</p>
 </div>
 </section>
 
@@ -511,13 +583,21 @@ input,textarea,select,.slide,.dropzone{scroll-margin-bottom:170px;}
 <div class="actionbar">
 <div class="inner">
 <div class="info" id="barInfo">共 <b>0</b> 页</div>
+<span class="fmt-wrap">
+<label class="fmt-label" for="exportFormat">导出格式</label>
+<select id="exportFormat" aria-label="导出格式">
+<option value="txt" selected>txt 文本</option>
+<option value="pro">.pro（ProPresenter 7）</option>
+<option value="pro6">.pro6（ProPresenter 6）</option>
+</select>
+</span>
 <button class="btn ghost" id="copyBtn" type="button">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
 复制分页文本
 </button>
 <button class="btn primary" id="downloadBtn" type="button">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="m6 10 6 6 6-6"/><path d="M4 20h16"/></svg>
-下载 ProPresenter 文件
+下载文件
 </button>
 </div>
 </div>
@@ -549,10 +629,19 @@ maxChars: 24,
 mode: "section", // section | flow
 labelAsTag: true,
 zoom: 1,
+fontKey: "yahei",
+fontScale: 1,
+bold: true,
+align: "center",
+textColor: "#ffffff",
+labelColors: {},
 slides: [],
-xfMode: "none",
+exportFormat: "txt",
+useTranslate: false,
+usePinyin: false,
 transLangs: [{ code: "en", name: "英语 English"}],
-pyStyle: "above",
+pyStyle: "below",
+pyTone: "none",
 display: null,
 displayKey: "",
 xfBusy: false,
@@ -718,10 +807,42 @@ setStatus((fileIdx + p) / fileCount, "正在识别 " + file.name + " … " + Mat
 
 function handleFiles(files) {
 if (state.busy ||!files ||!files.length) return;
-var list = Array.prototype.slice.call(files).filter(function (f) {
-return f.type.indexOf("image/") === 0 || f.type === "application/pdf" || /\.pdf$/i.test(f.name);
+var all = Array.prototype.slice.call(files);
+var textFiles = all.filter(isTextFile);
+var list = all.filter(function (f) {
+return !isTextFile(f) && (f.type.indexOf("image/") === 0 || f.type === "application/pdf" || /\.pdf$/i.test(f.name));
 });
-if (!list.length) { toast("没有可处理的文件，请选图片或 PDF"); return;}
+if (!list.length && !textFiles.length) { toast("没有可处理的文件，请选图片、PDF 或字幕文件"); return;}
+if (textFiles.length && !list.length) {
+/* 只有字幕 / 文本文件：直接读取整理，不走识别 */
+var chain = Promise.resolve();
+textFiles.forEach(function (f) {
+chain = chain.then(function () {
+return readFileText(f).then(function (txt) {
+if (txt && looksLikeSubtitles(txt)) { importSubtitleText(txt, f.name); return;}
+if (txt && txt.trim()) {
+var ta = $("lyricText");
+var cur = ta.value.replace(/\s+$/, "");
+ta.value = cur? cur + "\n\n" + txt.trim(): txt.trim();
+if (!$("titleInput").value.trim()) {
+$("titleInput").value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+}
+refresh();
+toast("已载入 " + f.name + "，如需分段标结构可点第 2 步「智能整理结构」");
+}
+}).catch(function () { toast("文件读取失败：" + f.name);});
+});
+});
+return;
+}
+if (textFiles.length) {
+/* 图谱和字幕混选：字幕先导入，图片 / PDF 继续走识别 */
+textFiles.forEach(function (f) {
+readFileText(f).then(function (txt) {
+if (txt && looksLikeSubtitles(txt)) importSubtitleText(txt, f.name);
+}).catch(function () {});
+});
+}
 state.busy = true;
 var lang = $("langSel").value;
 var listEl = $("fileList");
@@ -823,6 +944,336 @@ res = res.replace(/\n{3,}/g, "\n\n");
 return res.replace(/^\n+|\n+$/g, "");
 }
 
+/* ---------- 字幕解析与结构整理 ---------- */
+function looksLikeSubtitles(text) {
+if (!text) return false;
+if (/-->/.test(text)) return true;
+if (/^\s*WEBVTT/im.test(text)) return true;
+if (/^\s*\[[0-9]{1,2}:[0-9]{2}([.:][0-9]{1,3})?\]/m.test(text)) return true;
+if (/^Dialogue:/m.test(text) && /\[Events\]/i.test(text)) return true;
+return false;
+}
+function parseTimecode(s) {
+var m = /([0-9]{1,2}):([0-9]{2}):([0-9]{2})[.,]([0-9]{1,3})/.exec(s || "");
+if (m) return (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3]) + (+m[4]) / Math.pow(10, m[4].length);
+m = /([0-9]{1,2}):([0-9]{2})[.,]([0-9]{1,3})/.exec(s || "");
+if (m) return (+m[1]) * 60 + (+m[2]) + (+m[3]) / Math.pow(10, m[3].length);
+return null;
+}
+function cleanCueText(t) {
+return String(t || "")
+.replace(/\{[^}]*\}/g, "")
+.replace(/<[^>]*>/g, "")
+.replace(/\\[Nn]/g, "\n")
+.replace(/&nbsp;/g, " ")
+.trim();
+}
+/* 解析 SRT / VTT / LRC / ASS，返回 { title, cues: [{start, end, text}] }，时间为秒 */
+function parseSubtitles(text) {
+var src = String(text || "").replace(/^\ufeff/, "");
+var title = "";
+var cues = [];
+function pushCue(start, end, rawText) {
+cleanCueText(rawText).split("\n").forEach(function (l) {
+l = l.trim();
+if (l) cues.push({ start: start, end: end, text: l});
+});
+}
+if (/^Dialogue:/m.test(src) && /\[Events\]/i.test(src)) {
+/* ASS / SSA */
+var fmt = null;
+src.replace(/\r\n?/g, "\n").split("\n").forEach(function (ln) {
+if (/^Format:/i.test(ln)) {
+if (!fmt) fmt = ln.replace(/^Format:\s*/i, "").split(",").map(function (x) { return x.trim().toLowerCase();});
+return;
+}
+if (!/^Dialogue:/i.test(ln)) return;
+var parts = ln.replace(/^Dialogue:\s*/i, "").split(",");
+var si = fmt? fmt.indexOf("start"): 1;
+var ei = fmt? fmt.indexOf("end"): 2;
+var ti = fmt? fmt.indexOf("text"): 9;
+if (si < 0) si = 1;
+if (ei < 0) ei = 2;
+if (ti < 0) ti = parts.length - 1;
+pushCue(parseTimecode(parts[si] || ""), parseTimecode(parts[ei] || ""), parts.slice(ti).join(","));
+});
+} else if (!/-->/.test(src) && /\[[0-9]{1,2}:[0-9]{2}([.:][0-9]{1,3})?\]/.test(src)) {
+/* LRC */
+var offset = 0;
+src.replace(/\r\n?/g, "\n").split("\n").forEach(function (ln) {
+var tiM = /\[ti:\s*([^\]]*)\]/i.exec(ln);
+if (tiM && !title) title = tiM[1].trim();
+var offM = /\[offset:\s*(-?[0-9]+)\]/i.exec(ln);
+if (offM) offset = (+offM[1]) / 1000;
+var tags = [];
+var rest = ln.replace(/\[([0-9]{1,2}):([0-9]{2})(?:[.:]([0-9]{1,3}))?\]/g, function (mm, a, b, c) {
+tags.push((+a) * 60 + (+b) + (c? (+c) / Math.pow(10, c.length): 0));
+return "";
+});
+var txt = cleanCueText(rest);
+if (!tags.length || !txt) return;
+tags.forEach(function (t) { pushCue(t + offset, null, txt);});
+});
+cues.sort(function (a, b) { return (a.start || 0) - (b.start || 0);});
+cues.forEach(function (c, i) {
+c.end = (i + 1 < cues.length)? cues[i + 1].start: (c.start != null? c.start + 4: null);
+});
+} else {
+/* SRT / VTT：空行分块，含 --> 的行是时间轴，其后是歌词，序号行自动忽略 */
+src.replace(/\r\n?/g, "\n").split(/\n\s*\n/).forEach(function (blk) {
+var blines = blk.split("\n");
+var tIdx = -1;
+for (var i = 0; i < blines.length; i++) {
+if (blines[i].indexOf("-->") >= 0) { tIdx = i; break;}
+}
+if (tIdx < 0) return;
+var times = blines[tIdx].split("-->");
+pushCue(parseTimecode(times[0] || ""), parseTimecode(times[1] || ""), blines.slice(tIdx + 1).join("\n"));
+});
+cues.sort(function (a, b) { return (a.start || 0) - (b.start || 0);});
+}
+return { title: title, cues: cues};
+}
+/* 找重复出现的连续段落（副歌）：先比重复次数，再比段落长度 */
+function findChorus(flat) {
+var n = flat.length;
+if (n < 4) return null;
+var maxL = Math.min(12, Math.floor(n / 2));
+var best = null;
+for (var L = maxL; L >= 1; L--) {
+var seen = {};
+for (var i = 0; i + L <= n; i++) {
+var key = flat.slice(i, i + L).join("\n");
+(seen[key] = seen[key] || []).push(i);
+}
+Object.keys(seen).forEach(function (k) {
+var occ = [], last = -1e9;
+seen[k].forEach(function (p) {
+if (p >= last) { occ.push(p); last = p + L;}
+});
+if (occ.length >= 2 && (L >= 2 || occ.length >= 3)) {
+if (!best || occ.length > best.occ.length || (occ.length === best.occ.length && L > best.len)) {
+best = { len: L, occ: occ};
+}
+}
+});
+}
+return best;
+}
+var CN_NUM = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+/* 把一串歌词行按重复段落切成带标签的段落；找不到副歌返回 null */
+function labelStructure(flat) {
+var ch = findChorus(flat);
+if (!ch) return null;
+var isChorusAt = {};
+ch.occ.forEach(function (p) { isChorusAt[p] = true;});
+var runs = [];
+var chorusSeen = 0;
+var i = 0;
+while (i < flat.length) {
+if (isChorusAt[i]) {
+runs.push({ type: "chorus", lines: flat.slice(i, i + ch.len)});
+i += ch.len;
+chorusSeen++;
+} else {
+var j = i;
+while (j < flat.length && !isChorusAt[j]) j++;
+runs.push({ type: "run", lines: flat.slice(i, j), afterChorus: chorusSeen});
+i = j;
+}
+}
+var sections = [];
+var verseNo = 0, runCount = 0;
+runs.forEach(function (r, idx) {
+if (r.type === "chorus") { sections.push({ label: "副歌", lines: r.lines}); return;}
+runCount++;
+var isLast = idx === runs.length - 1;
+var label;
+if (isLast && r.afterChorus >= 1 && runs[idx - 1] && runs[idx - 1].type === "chorus" && r.lines.length <= 4 && runCount > 1) {
+label = "尾声";
+} else if (!isLast && r.afterChorus >= 2) {
+label = "桥段";
+} else {
+verseNo++;
+label = "主歌" + (CN_NUM[verseNo - 1] || verseNo);
+}
+sections.push({ label: label, lines: r.lines});
+});
+return sections;
+}
+function sectionsToText(sections) {
+return sections.map(function (s) {
+return (s.label? s.label + "\n": "") + s.lines.join("\n");
+}).join("\n\n");
+}
+/* 字幕 cues → 段落：优先按重复段落识别结构；没有副歌时按停顿间隔分段 */
+function organizeCues(cues) {
+var flat = cues.map(function (c) { return c.text;});
+var labeled = labelStructure(flat);
+if (labeled) {
+var cc = 0;
+labeled.forEach(function (s) { if (s.label === "副歌") cc++;});
+return { sections: labeled, chorusCount: cc, lineCount: flat.length};
+}
+var sections = [], cur = [];
+cues.forEach(function (c, i) {
+if (i > 0 && cur.length) {
+var prev = cues[i - 1];
+var gap = (c.start != null && prev.end != null)? c.start - prev.end: 0;
+var held = (prev.start != null && prev.end != null)? prev.end - prev.start: 0;
+if (gap >= 2.2 || held >= 9) { sections.push({ label: null, lines: cur}); cur = [];}
+}
+cur.push(c.text);
+});
+if (cur.length) sections.push({ label: null, lines: cur});
+return { sections: sections, chorusCount: 0, lineCount: flat.length};
+}
+function organizeSummary(org) {
+if (org.chorusCount) return "共 " + org.sections.length + " 段，识别出副歌 ×" + org.chorusCount + "，已标出主歌 / 副歌";
+return "共 " + org.sections.length + " 段、" + org.lineCount + " 行（没找到重复的副歌段落）";
+}
+/* 把一段字幕文本解析、整理后追加到第 2 步；成功返回 true */
+function importSubtitleText(raw, filename) {
+var parsed = parseSubtitles(raw);
+if (!parsed.cues.length) return false;
+var org = organizeCues(parsed.cues);
+var text = sectionsToText(org.sections);
+var ta = $("lyricText");
+var cur = ta.value.replace(/\s+$/, "");
+ta.value = cur? cur + "\n\n" + text: text;
+if (!$("titleInput").value.trim()) {
+if (parsed.title) $("titleInput").value = parsed.title;
+else if (filename) $("titleInput").value = filename.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+}
+refresh();
+$("lyricText").scrollIntoView({ behavior: "smooth", block: "start"});
+toast("字幕已整理好：" + organizeSummary(org));
+return true;
+}
+/* 第 2 步「智能整理结构」：字幕残留、纯文本都处理 */
+function organizeLyrics(text) {
+if (looksLikeSubtitles(text)) {
+var parsed = parseSubtitles(text);
+if (parsed.cues.length) {
+var org = organizeCues(parsed.cues);
+return { text: sectionsToText(org.sections), msg: "已整理：去掉时间轴和序号，" + organizeSummary(org)};
+}
+}
+var rawLines = text.replace(/\r\n?/g, "\n").split("\n");
+var sectionsIn = [], curSec = { label: null, lines: []};
+function pushSec() {
+if (curSec.lines.length || curSec.label) sectionsIn.push(curSec);
+curSec = { label: null, lines: []};
+}
+rawLines.forEach(function (raw) {
+var line = raw.trim();
+if (!line) { pushSec(); return;}
+if (line.indexOf("-->") >= 0) return;
+line = line.replace(/^(\[[0-9]{1,2}:[0-9]{2}([.:][0-9]{1,3})?\]\s*)+/, "").trim();
+if (!line) return;
+if (isLabelLine(line)) {
+pushSec();
+curSec.label = line.replace(/^[（(\[【]\s*/, "").replace(/\s*[）)\]】]\s*[:：]?$/, "");
+return;
+}
+curSec.lines.push(line);
+});
+pushSec();
+var hasLabels = sectionsIn.some(function (s) { return s.label;});
+if (hasLabels) {
+return { text: sectionsToText(sectionsIn), msg: "已整理：合并了多余空行，共 " + sectionsIn.length + " 段（原有段落名已保留）"};
+}
+var flat = [];
+sectionsIn.forEach(function (s) { flat = flat.concat(s.lines);});
+var labeled = labelStructure(flat);
+if (labeled) {
+var cc = 0;
+labeled.forEach(function (s) { if (s.label === "副歌") cc++;});
+return { text: sectionsToText(labeled), msg: "已整理：共 " + labeled.length + " 段，识别出副歌 ×" + cc + "，已标出主歌 / 副歌"};
+}
+return { text: sectionsToText(sectionsIn), msg: "已整理：合并了多余空行，共 " + sectionsIn.length + " 段（没找到重复的副歌段落）"};
+}
+function isTextFile(f) {
+return /\.(srt|lrc|vtt|ass|ssa|txt|text|md)$/i.test(f.name || "") || f.type === "text/plain";
+}
+function readFileText(f) {
+if (f.text) return f.text();
+return new Promise(function (resolve, reject) {
+var r = new FileReader();
+r.onload = function () { resolve(String(r.result || ""));};
+r.onerror = function () { reject(new Error("read failed"));};
+r.readAsText(f);
+});
+}
+
+/* ---------- 样式：字体 / 格式 / 标签颜色 ---------- */
+var FONTS = {
+yahei: { css: "\"Microsoft YaHei\",\"PingFang SC\",\"Noto Sans SC\",sans-serif", name: "Microsoft YaHei"},
+hei: { css: "SimHei,\"Microsoft YaHei\",sans-serif", name: "SimHei"},
+song: { css: "\"Songti SC\",SimSun,\"Noto Serif SC\",serif", name: "SimSun"},
+kai: { css: "\"Kaiti SC\",KaiTi,serif", name: "KaiTi"},
+arial: { css: "Arial,Helvetica,sans-serif", name: "Arial"}
+};
+function fontDef() { return FONTS[state.fontKey] || FONTS.yahei;}
+function hexRgb(hex) {
+var m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
+if (!m) return { r: 255, g: 255, b: 255};
+var n = parseInt(m[1], 16);
+return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255};
+}
+function colorFloats(hex) {
+var c = hexRgb(hex);
+return { r: c.r / 255, g: c.g / 255, b: c.b / 255};
+}
+function defaultLabelColor(label) {
+if (!label) return "#a97e14";
+if (/副歌|Chorus|Refrain/i.test(label)) return "#d81e5b";
+if (/主歌|Verse/i.test(label)) return "#0b63e5";
+if (/桥|Bridge/i.test(label)) return "#c26a00";
+if (/导歌|Pre/i.test(label)) return "#0e8a84";
+if (/尾声|结尾|Outro/i.test(label)) return "#66707c";
+return "#a97e14";
+}
+function labelColorHex(label) { return state.labelColors[label] || defaultLabelColor(label);}
+function groupHex(name) { return name === "歌词"? "#0077cc": labelColorHex(name);}
+var labelSig = "\u0000init";
+function renderLabelColors() {
+var labels = [];
+state.slides.forEach(function (sl) {
+if (sl.label && labels.indexOf(sl.label) < 0) labels.push(sl.label);
+});
+var sig = labels.join("|");
+if (sig === labelSig) return;
+labelSig = sig;
+var box = $("labelColorList");
+if (!box) return;
+box.innerHTML = "";
+if (!labels.length) {
+var s = document.createElement("span");
+s.className = "hint";
+s.textContent = "歌词里还没有段落名（如「主歌一」「副歌」单独占一行），加上后这里就能改每个标签的颜色。";
+box.appendChild(s);
+return;
+}
+labels.forEach(function (lb) {
+var row = document.createElement("span");
+row.className = "lblrow";
+var inp = document.createElement("input");
+inp.type = "color";
+inp.value = labelColorHex(lb);
+inp.setAttribute("aria-label", lb + " 的标签颜色");
+inp.addEventListener("input", function () {
+state.labelColors[lb] = inp.value;
+render();
+});
+var nm = document.createElement("span");
+nm.textContent = lb;
+row.appendChild(inp);
+row.appendChild(nm);
+box.appendChild(row);
+});
+}
+
 /* ---------- 拆页 ---------- */
 var LABEL_RE = /^[（(\[【]?\s*(主歌|副歌|导歌|桥段|桥|尾声|结尾|前奏|间奏|序曲|重复|Verse|Chorus|Bridge|Pre[-\s]?Chorus|Intro|Outro|Tag|Refrain)\s*[一二三四五六七八九十0-9]*\s*[）)\]】]?\s*[:：]?$/i;
 function isLabelLine(line) { return LABEL_RE.test(line.trim());}
@@ -876,14 +1327,19 @@ if (cur.length) chunks.push(cur);
 return chunks;
 }
 
-function slideFontSize(items) {
+function itemsMetrics(items) {
 var longest = 0, weight = 0;
 items.forEach(function (it) {
 var f = it.k === "tr"? 0.82: (it.k === "tr2"? 0.76: (it.k === "py"? 0.5: 1));
 var len = it.t.length * f;
 if (len > longest) longest = len;
-weight += it.k === "main"? 1: (it.k === "tr"? 0.9: (it.k === "tr2"? 0.85: 0.6));
+weight += it.k === "main"? 1: (it.k === "unit"? 1.6: (it.k === "tr"? 0.9: (it.k === "tr2"? 0.85: 0.6)));
 });
+return { longest: longest, weight: weight};
+}
+function slideFontSize(items) {
+var m = itemsMetrics(items);
+var longest = m.longest, weight = m.weight;
 var size;
 if (longest <= 8) size = 27;
 else if (longest <= 12) size = 23;
@@ -893,13 +1349,58 @@ else if (longest <= 27) size = 15;
 else size = 14;
 if (weight >= 4) size -= 2;
 if (weight >= 5.5) size -= 1;
-return Math.max(12, Math.round(size * state.zoom));
+return Math.max(12, Math.round(size * state.zoom * state.fontScale));
+}
+
+function appendItems(box, items) {
+function addP(t, k) {
+var p = document.createElement("p");
+if (k && k !== "main") p.className = k;
+p.textContent = t;
+box.appendChild(p);
+}
+items.forEach(function (it) {
+if (it.k === "unit" && it.cells) {
+var wrap = document.createElement("div");
+wrap.className = "pyunit";
+wrap.style.justifyContent = state.align === "left"? "flex-start": (state.align === "right"? "flex-end": "center");
+it.cells.forEach(function (cell) {
+if (cell.sp) {
+var sp = document.createElement("span");
+sp.className = "cell sp";
+wrap.appendChild(sp);
+return;
+}
+var c = document.createElement("span");
+c.className = "cell";
+var ch = document.createElement("span");
+ch.className = "ch";
+ch.textContent = cell.c;
+var py = document.createElement("span");
+py.className = "py";
+py.textContent = cell.p || "";
+if (it.pos === "above") { c.appendChild(py); c.appendChild(ch);}
+else { c.appendChild(ch); c.appendChild(py);}
+wrap.appendChild(c);
+});
+box.appendChild(wrap);
+return;
+}
+if (it.k === "unit") {
+if (it.plain && it.pos === "above") addP(it.plain, "py");
+addP(it.t, "main");
+if (it.plain && it.pos !== "above") addP(it.plain, "py");
+return;
+}
+addP(it.t, it.k);
+});
 }
 
 function render() {
+document.body.classList.toggle("fmt-nobold", !state.bold);
 var text = $("lyricText").value;
 var origSlides = buildSlides(text);
-var transformed = state.xfMode !== "none" && state.display && state.displayKey === keyOf(origSlides);
+var transformed = (state.useTranslate || state.usePinyin) && state.display && state.displayKey === keyOf(origSlides);
 var slides = transformed? state.display: origToDisplay(origSlides);
 state.slides = slides;
 var grid = $("slides");
@@ -915,14 +1416,16 @@ if (sl.label) html += '<div class="chip"></div>';
 html += '<div class="lines" style="font-size:' + slideFontSize(sl.items) + 'px"></div>';
 html += '<div class="num">' + (idx + 1) + " / " + slides.length + "</div>";
 card.innerHTML = html;
-if (sl.label) card.querySelector(".chip").textContent = sl.label;
+if (sl.label) {
+var chipEl = card.querySelector(".chip");
+chipEl.textContent = sl.label;
+chipEl.style.background = labelColorHex(sl.label);
+}
+card.style.color = state.textColor;
 var linesEl = card.querySelector(".lines");
-sl.items.forEach(function (it) {
-var p = document.createElement("p");
-if (it.k && it.k !== "main") p.className = it.k;
-p.textContent = it.t;
-linesEl.appendChild(p);
-});
+linesEl.style.fontFamily = fontDef().css;
+linesEl.style.textAlign = state.align;
+appendItems(linesEl, sl.items);
 card.addEventListener("click", function () { openLightbox(idx);});
 card.addEventListener("keydown", function (e) {
 if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLightbox(idx);}
@@ -932,7 +1435,7 @@ grid.appendChild(card);
 $("emptyState").style.display = slides.length? "none": "block";
 var chars = text.replace(/\s/g, "").length;
 var sections = text.split(/\n\s*\n/).filter(function (s) { return s.trim();}).length;
-var suffix = transformed? (state.xfMode === "translate"? " · 多语对照": " · 已加拼音"): "";
+var suffix = transformed? (state.useTranslate && state.usePinyin? " · 多语对照＋拼音": (state.useTranslate? " · 多语对照": " · 已加拼音")): "";
 $("stats").innerHTML = slides.length
 ? "共 <b>" + slides.length + "</b> 页 · <b>" + sections + "</b> 段 · 歌词 <b>" + chars + "</b> 字（不含空格）" + suffix
 : "还没有歌词。";
@@ -941,27 +1444,281 @@ $("downloadBtn").disabled =!slides.length;
 $("copyBtn").disabled =!slides.length;
 var xfHintEl = $("xfHint");
 if (xfHintEl) {
-if (state.xfMode === "none") xfHintEl.textContent = "现在是原文模式：预览和导出就是歌词原文。";
-else if (transformed) xfHintEl.textContent = state.xfMode === "translate"? "多语对照已生成：下方预览和导出文件里，每页原文在上、各语言译文依次在下。": "拼音已生成：下方预览和导出文件都带拼音。";
-else xfHintEl.textContent = "还没生成（或歌词、拆页设置刚改过）：点上面的按钮生成，生成前预览和导出仍是原文。";
+var xfActive = state.useTranslate || state.usePinyin;
+if (!xfActive) xfHintEl.textContent = "现在翻译和拼音都没开：预览和导出就是歌词原文。";
+else if (transformed) xfHintEl.textContent = state.useTranslate && state.usePinyin? "已生成：下方预览和导出文件里，每页原文在上、中文行带拼音，各语言译文依次在下。": (state.useTranslate? "多语对照已生成：下方预览和导出文件里，每页原文在上、各语言译文依次在下。": "拼音已生成：下方预览和导出文件都带拼音。");
+else xfHintEl.textContent = "还没生成（或歌词、拆页设置刚改过）：点「生成对照版」生成，生成前预览和导出仍是原文。";
 }
+renderLabelColors();
 }
 function refresh() { render();}
 
 /* ---------- 导出 ---------- */
 function exportText() {
-return state.slides.map(function (sl) { return sl.items.map(function (it) { return it.t;}).join("\n");}).join("\n\n") + "\n";
+return state.slides.map(function (sl) {
+var lines = [];
+sl.items.forEach(function (it) {
+if (it.k === "unit") {
+if (it.plain && it.pos === "above") lines.push(it.plain);
+lines.push(it.t);
+if (it.plain && it.pos !== "above") lines.push(it.plain);
+} else lines.push(it.t);
+});
+return lines.join("\n");
+}).join("\n\n") + "\n";
 }
-function download() {
-if (!state.slides.length) return;
-var title = $("titleInput").value.trim() || "歌词";
-var blob = new Blob(["\ufeff" + exportText()], { type: "text/plain;charset=utf-8"});
+function safeTitle() {
+var t = $("titleInput").value.trim() || "歌词";
+return t.replace(/[\\\/:*?"<>|]+/g, "_");
+}
+function slideEntries(sl) {
+var out = [];
+sl.items.forEach(function (it) {
+if (it.k === "unit") {
+if (it.plain && it.pos === "above") out.push({ t: it.plain, k: "py"});
+out.push({ t: it.t, k: "main"});
+if (it.plain && it.pos !== "above") out.push({ t: it.plain, k: "py"});
+} else out.push({ t: it.t, k: it.k});
+});
+return out;
+}
+function groupedSlides() {
+var groups = [], cur = null;
+state.slides.forEach(function (sl) {
+var name = sl.label || "歌词";
+if (!cur || cur.name !== name) { cur = { name: name, slides: []}; groups.push(cur);}
+cur.slides.push(sl);
+});
+return groups;
+}
+function uuidGen() {
+if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+var r = Math.random() * 16 | 0;
+return (c === "x"? r: (r & 3 | 8)).toString(16);
+});
+}
+function xmlEsc(s) {
+return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+/* RTF：.pro 与 .pro6 共用。字号为半点（fs120 = 60pt），随第 3 步字号设置缩放；
+   字体、粗细、对齐、文字颜色取第 3 步样式设置，拼音金色小字、第一译文略小、第二译文起更小。 */
+function rtfEscapeText(text) {
+var out = "";
+for (var i = 0; i < text.length; i++) {
+var code = text.charCodeAt(i);
+var ch = text.charAt(i);
+if (ch === "\\") out += "\\\\";
+else if (ch === "{") out += "\\{";
+else if (ch === "}") out += "\\}";
+else if (code < 128) out += ch;
+else {
+var n = code > 32767? code - 65536: code;
+out += "\\u" + n + "?";
+}
+}
+return out;
+}
+function buildRtf(entries) {
+var base = Math.round(120 * state.fontScale);
+var sizes = { main: base, unit: base, tr: Math.round(92 * state.fontScale), tr2: Math.round(80 * state.fontScale), py: Math.round(50 * state.fontScale)};
+var tc = hexRgb(state.textColor);
+var alignCode = state.align === "left"? "\\ql": (state.align === "right"? "\\qr": "\\qc");
+var rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0{\\fonttbl{\\f0\\fnil " + fontDef().name + ";}}"
++ "{\\colortbl;\\red" + tc.r + "\\green" + tc.g + "\\blue" + tc.b + ";\\red233\\green199\\blue103;}"
++ "\\uc1";
+entries.forEach(function (e) {
+var fs = sizes[e.k] || base;
+var bold = (e.k === "main" || e.k === "unit") && state.bold? "\\b": "\\b0";
+var cf = e.k === "py"? "\\cf2": "\\cf1";
+rtf += "\\pard" + alignCode + "\\f0" + bold + "\\fs" + fs + cf + " " + rtfEscapeText(e.t) + "\\par";
+});
+rtf += "}";
+return rtf;
+}
+function b64Ascii(s) {
+/* buildRtf 的结果全是 ASCII，可直接 btoa */
+return btoa(s);
+}
+
+/* ---------- .pro6（ProPresenter 6，XML） ---------- */
+function buildPro6() {
+var title = safeTitle();
+var now = new Date().toISOString().replace(/\.[0-9]+Z$/, "");
+var docUuid = uuidGen().toUpperCase();
+var groups = groupedSlides();
+var arrangementUuid = uuidGen().toUpperCase();
+var groupUuids = [];
+var gXml = "";
+groups.forEach(function (g) {
+var gUuid = uuidGen().toUpperCase();
+groupUuids.push(gUuid);
+var slidesXml = "";
+g.slides.forEach(function (sl, idx) {
+var sUuid = uuidGen().toUpperCase();
+var rtf = buildRtf(slideEntries(sl));
+slidesXml += "<RVDisplaySlide backgroundColor=\"0 0 0 1\" enabled=\"true\" notes=\"\" highlightColor=\"0 0 0 0\" hotKey=\"\" label=\"" + xmlEsc(sl.label || "") + "\" UUID=\"" + sUuid + "\" uuid=\"" + sUuid + "\" slideType=\"1\" sort_index=\"" + idx + "\">"
++ "<displayElements>"
++ "<RVTextElement displayDelay=\"0\" displayName=\"TextElement\" locked=\"false\" source=\"\" typeID=\"0\" isTemplateElement=\"false\">"
++ "<RVRect3D><RVPoint3D x=\"100\" y=\"135\" z=\"0\"/><RVSize3D width=\"1720\" height=\"810\" depth=\"0\"/></RVRect3D>"
++ "<RVTextStyle displayName=\"TextElement\" fontName=\"" + xmlEsc(fontDef().name) + "\" fontSize=\"" + Math.round(60 * state.fontScale) + "\" alignment=\"" + state.align + "\"/>"
++ "<shadow enable=\"true\" angle=\"315\" offset=\"5\" radius=\"5\" color=\"0 0 0 1\" opacity=\"0.75\"/>"
++ "<RTFData>" + b64Ascii(rtf) + "</RTFData>"
++ "</RVTextElement>"
++ "</displayElements>"
++ "<displayGroups/></RVDisplaySlide>";
+});
+var gf = colorFloats(groupHex(g.name));
+gXml += "<RVSlideGrouping name=\"" + xmlEsc(g.name) + "\" uuid=\"" + gUuid + "\" UUID=\"" + gUuid + "\" color=\"" + gf.r.toFixed(3) + " " + gf.g.toFixed(3) + " " + gf.b.toFixed(3) + " 1\">"
++ "<slides>" + slidesXml + "</slides></RVSlideGrouping>";
+});
+return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
++ "<RVPresentationDocument versionNumber=\"600\" osVersion=\"10.0\" applicationVersion=\"6\" width=\"1920\" height=\"1080\" minVersionToRun=\"600\" minVersionToSave=\"600\" docType=\"0\" creatorID=\"0\" source=\"\" dateCreated=\"" + now + "\" dateModified=\"" + now + "\" uuid=\"" + docUuid + "\" UUID=\"" + docUuid + "\" usedCount=\"0\" category=\"Song\" title=\"" + xmlEsc(title) + "\" notes=\"\" chordChart=\"\" artist=\"\" author=\"\" album=\"\" copyright=\"\" publisher=\"\" CCLINumber=\"\" CCLIDisplay=\"false\" displayTitle=\"true\">"
++ "<timeline duration=\"0\"><groups/><timeCues/><videoInputs/></timeline>"
++ "<bibleReference/>"
++ "<groups>" + gXml + "</groups>"
++ "<arrangements><RVSongArrangement name=\"Master\" uuid=\"" + arrangementUuid + "\" groupOrder=\"" + groupUuids.join(",") + "\"/></arrangements>"
++ "</RVPresentationDocument>\n";
+}
+
+/* ---------- .pro（ProPresenter 7，Protocol Buffers） ----------
+   按社区逆向的 rv.data.Presentation 结构（greyshirtguy/ProPresenter7-Proto）
+   手工编码 protobuf；字段号以该结构为准。 */
+function PB() { this.b = [];}
+PB.prototype.raw = function (arr) { for (var i = 0; i < arr.length; i++) this.b.push(arr[i] & 255);};
+PB.prototype.varint = function (v) {
+var n = v;
+do { var x = n % 128; n = Math.floor(n / 128); if (n > 0) x |= 128; this.b.push(x);} while (n > 0);
+};
+PB.prototype.tag = function (field, wire) { this.varint(field * 8 + wire);};
+PB.prototype.vfield = function (field, v) { if (!v) return; this.tag(field, 0); this.varint(v);};
+PB.prototype.bool = function (field, v) { if (!v) return; this.tag(field, 0); this.varint(1);};
+PB.prototype.msg = function (field, sub) { var bytes = sub.bytes(); this.tag(field, 2); this.varint(bytes.length); this.raw(bytes);};
+PB.prototype.str = function (field, s) {
+if (s == null || s === "") return;
+var bytes = new TextEncoder().encode(s);
+this.tag(field, 2); this.varint(bytes.length); this.raw(bytes);
+};
+PB.prototype.bytesField = function (field, bytes) { this.tag(field, 2); this.varint(bytes.length); this.raw(bytes);};
+PB.prototype.dbl = function (field, v) {
+if (!v) return;
+var buf = new DataView(new ArrayBuffer(8));
+buf.setFloat64(0, v, true);
+this.tag(field, 1); for (var i = 0; i < 8; i++) this.b.push(buf.getUint8(i));
+};
+PB.prototype.flt = function (field, v) {
+if (!v) return;
+var buf = new DataView(new ArrayBuffer(4));
+buf.setFloat32(0, v, true);
+this.tag(field, 5); for (var i = 0; i < 4; i++) this.b.push(buf.getUint8(i));
+};
+PB.prototype.bytes = function () { return new Uint8Array(this.b);};
+function pbUuid(s) { var p = new PB(); p.str(1, s); return p;}
+function pbColor(r, g, b, a) { var p = new PB(); p.flt(1, r); p.flt(2, g); p.flt(3, b); p.flt(4, a); return p;}
+function pbPoint(x, y) { var p = new PB(); p.dbl(1, x); p.dbl(2, y); return p;}
+function pbSize(w, h) { var p = new PB(); p.dbl(1, w); p.dbl(2, h); return p;}
+function buildPro() {
+var title = safeTitle();
+var docUuid = uuidGen();
+var arrangementUuid = uuidGen();
+var groups = groupedSlides();
+var ZERO = "00000000-0000-0000-0000-000000000000";
+var cueGroups = [], cues = [], groupIds = [];
+groups.forEach(function (g) {
+var gUuid = uuidGen();
+groupIds.push(gUuid);
+var cueIds = [];
+g.slides.forEach(function (sl) {
+var cueUuid = uuidGen();
+cueIds.push(cueUuid);
+/* 文本元素 */
+var font = new PB(); font.str(1, fontDef().name); font.dbl(2, 60 * state.fontScale); font.str(9, fontDef().name); font.str(10, state.bold? "Bold": "Regular");
+var para = new PB(); para.vfield(1, 2); para.dbl(5, 1); para.msg(13, new PB());
+var tcf = colorFloats(state.textColor);
+var attrs = new PB(); attrs.msg(1, font); attrs.msg(3, pbColor(tcf.r, tcf.g, tcf.b, 1)); attrs.msg(6, para); attrs.msg(12, pbColor(tcf.r, tcf.g, tcf.b, 1));
+var shadow = new PB(); shadow.dbl(2, 315); shadow.dbl(3, 5); shadow.dbl(4, 5); shadow.msg(5, pbColor(0, 0, 0, 1)); shadow.dbl(6, 0.75);
+var rtfBytes = new TextEncoder().encode(buildRtf(slideEntries(sl)));
+var text = new PB(); text.msg(3, attrs); text.msg(4, shadow); text.bytesField(5, rtfBytes); text.vfield(6, 1); text.msg(8, new PB());
+var shape = new PB(); shape.vfield(1, 1);
+var path = new PB(); path.bool(1, true);
+[[0, 0], [1, 0], [1, 1], [0, 1]].forEach(function (pt) {
+var bp = new PB(); bp.msg(1, pbPoint(pt[0], pt[1])); bp.msg(2, pbPoint(pt[0], pt[1])); bp.msg(3, pbPoint(pt[0], pt[1]));
+path.msg(2, bp);
+});
+path.msg(3, shape);
+var bounds = new PB(); bounds.msg(1, pbPoint(100, 135)); bounds.msg(2, pbSize(1720, 810));
+var elem = new PB(); elem.msg(1, pbUuid(uuidGen())); elem.str(2, "TextElement"); elem.msg(3, bounds); elem.dbl(5, 1); elem.msg(8, path); elem.msg(13, text); elem.msg(14, new PB());
+var wrapper = new PB(); wrapper.msg(1, elem); wrapper.vfield(4, 3);
+var baseSlide = new PB(); baseSlide.msg(1, wrapper); baseSlide.msg(5, pbColor(0, 0, 0, 1)); baseSlide.msg(6, pbSize(1920, 1080)); baseSlide.msg(7, pbUuid(uuidGen()));
+var notesRtf = new TextEncoder().encode(buildRtf([]));
+var notes = new PB(); notes.bytesField(1, notesRtf);
+var presSlide = new PB(); presSlide.msg(1, baseSlide); presSlide.msg(2, notes); presSlide.msg(4, new PB());
+var slideType = new PB(); slideType.msg(2, presSlide);
+var lf = sl.label? colorFloats(labelColorHex(sl.label)): { r: 1, g: 1, b: 1};
+var labelColor = pbColor(lf.r, lf.g, lf.b, 1);
+var label = new PB(); label.str(2, sl.label || ""); label.msg(3, labelColor);
+var action = new PB(); action.msg(1, pbUuid(uuidGen())); action.msg(3, label); action.bool(6, true); action.vfield(9, 11); action.msg(23, slideType);
+var cue = new PB();
+cue.msg(1, pbUuid(cueUuid));
+cue.msg(4, pbUuid(ZERO));
+cue.vfield(5, 1);
+cue.msg(6, pbUuid(ZERO));
+cue.msg(7, new PB());
+cue.msg(10, action);
+cue.bool(12, true);
+cues.push(cue);
+});
+var gf2 = colorFloats(groupHex(g.name));
+var group = new PB(); group.msg(1, pbUuid(gUuid)); group.str(2, g.name); group.msg(3, pbColor(gf2.r, gf2.g, gf2.b, 1));
+var cg = new PB(); cg.msg(1, group);
+cueIds.forEach(function (id) { cg.msg(2, pbUuid(id));});
+cueGroups.push(cg);
+});
+var arrangement = new PB(); arrangement.msg(1, pbUuid(arrangementUuid)); arrangement.str(2, "Master");
+groupIds.forEach(function (id) { arrangement.msg(3, pbUuid(id));});
+var platformVersion = new PB(); platformVersion.vfield(1, 10); platformVersion.str(4, "19041");
+var appVersion = new PB(); appVersion.vfield(1, 7); appVersion.vfield(2, 16); appVersion.str(4, "117571592");
+var appInfo = new PB(); appInfo.vfield(1, 2); appInfo.msg(2, platformVersion); appInfo.vfield(3, 1); appInfo.msg(4, appVersion);
+var lastMod = new PB(); lastMod.vfield(1, Math.floor(Date.now() / 1000));
+var background = new PB(); background.msg(1, pbColor(0, 0, 0, 1));
+var root = new PB();
+root.msg(1, appInfo);
+root.msg(2, pbUuid(docUuid));
+root.str(3, title);
+root.msg(5, lastMod);
+root.msg(8, background);
+root.msg(10, pbUuid(arrangementUuid));
+root.msg(11, arrangement);
+cueGroups.forEach(function (cg) { root.msg(12, cg);});
+cues.forEach(function (c) { root.msg(13, c);});
+root.msg(14, new PB());
+root.msg(17, new PB());
+return root.bytes();
+}
+
+function saveBlob(blob, filename) {
 var a = document.createElement("a");
 a.href = URL.createObjectURL(blob);
-a.download = title + ".txt";
+a.download = filename;
 document.body.appendChild(a);
 a.click();
 setTimeout(function () { URL.revokeObjectURL(a.href); a.remove();}, 400);
+}
+function download() {
+if (!state.slides.length) return;
+var title = safeTitle();
+var fmt = state.exportFormat || "txt";
+if (fmt === "pro") {
+saveBlob(new Blob([buildPro()], { type: "application/octet-stream"}), title + ".pro");
+toast("已下载 .pro（ProPresenter 7 专用），导入后先打开确认歌词显示正常");
+return;
+}
+if (fmt === "pro6") {
+saveBlob(new Blob(["\ufeff" + buildPro6()], { type: "text/xml;charset=utf-8"}), title + ".pro6");
+toast("已下载 .pro6（ProPresenter 6 专用，ProPresenter 7 也能导入）");
+return;
+}
+saveBlob(new Blob(["\ufeff" + exportText()], { type: "text/plain;charset=utf-8"}), title + ".txt");
 toast("已下载。在 ProPresenter 里选「文件 → 导入 → 文本」选这个文件即可");
 }
 function copyText() {
@@ -995,25 +1752,18 @@ function drawLightbox() {
 var sl = state.slides[lbIndex];
 if (!sl) return;
 var chip = $("lbChip");
-if (sl.label) { chip.style.display = "block"; chip.textContent = sl.label;}
+if (sl.label) { chip.style.display = "block"; chip.textContent = sl.label; chip.style.background = labelColorHex(sl.label);}
 else chip.style.display = "none";
 var box = $("lbLines");
 box.innerHTML = "";
-sl.items.forEach(function (it) {
-var p = document.createElement("p");
-if (it.k && it.k !== "main") p.className = it.k;
-p.textContent = it.t;
-box.appendChild(p);
-});
+box.style.fontFamily = fontDef().css;
+box.style.textAlign = state.align;
+$("lbSlide").style.color = state.textColor;
+appendItems(box, sl.items);
 var stage = $("lbSlide");
 var w = stage.clientWidth, h = stage.clientHeight;
-var longest = 0, weight = 0;
-sl.items.forEach(function (it) {
-var f = it.k === "tr"? 0.82: (it.k === "tr2"? 0.76: (it.k === "py"? 0.5: 1));
-var len = it.t.length * f;
-if (len > longest) longest = len;
-weight += it.k === "main"? 1: (it.k === "tr"? 0.9: (it.k === "tr2"? 0.85: 0.6));
-});
+var m = itemsMetrics(sl.items);
+var longest = m.longest, weight = m.weight;
 var fs = Math.min(w * 0.92 / Math.max(1, longest * 1.22), (h * 0.8) / Math.max(1, weight * 1.45), 96);
 box.style.fontSize = Math.max(20, Math.floor(fs)) + "px";
 $("lbCount").textContent = (lbIndex + 1) + " / " + state.slides.length;
@@ -1065,6 +1815,7 @@ $("tabSheet").addEventListener("click", function () { setImportTab("sheet");});
 $("loadPasteBtn").addEventListener("click", function () {
 var t = $("pasteBox").value.replace(/\s+$/, "");
 if (!t.trim()) { toast("先把歌词粘贴到上面的框里"); $("pasteBox").focus(); return;}
+if (looksLikeSubtitles(t) && importSubtitleText(t, "")) { $("pasteBox").value = ""; return;}
 var ta = $("lyricText");
 var cur = ta.value.replace(/\s+$/, "");
 ta.value = cur? cur + "\n\n" + t.trim(): t.trim();
@@ -1092,24 +1843,26 @@ $("txtInput").addEventListener("change", function () {
 var f = $("txtInput").files && $("txtInput").files[0];
 $("txtInput").value = "";
 if (!f) return;
-var done = function (txt) {
+readFileText(f).then(function (txt) {
+if (txt && looksLikeSubtitles(txt) && importSubtitleText(txt, f.name)) return;
 $("pasteBox").value = txt || "";
 if (!$("titleInput").value.trim()) {
 $("titleInput").value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
 }
 toast("已打开 " + f.name + "，点「载入并拆页」");
-};
-if (f.text) { f.text().then(done).catch(function () { toast("文件读取失败，换个文件试试");});}
-else {
-var r = new FileReader();
-r.onload = function () { done(String(r.result || ""));};
-r.onerror = function () { toast("文件读取失败，换个文件试试");};
-r.readAsText(f);
-}
+}).catch(function () { toast("文件读取失败，换个文件试试");});
 });
 
 $("lyricText").addEventListener("input", refresh);
 $("titleInput").addEventListener("input", function () {});
+$("organizeBtn").addEventListener("click", function () {
+var ta = $("lyricText");
+if (!ta.value.trim()) { toast("先导入或粘贴歌词，再整理"); return;}
+var res = organizeLyrics(ta.value);
+ta.value = res.text;
+refresh();
+toast(res.msg);
+});
 $("cleanBtn").addEventListener("click", function () {
 var ta = $("lyricText");
 if (!ta.value.trim()) { toast("先导入或粘贴歌词，再清理"); return;}
@@ -1191,7 +1944,45 @@ state.zoom = $("zoomRange").value / 100;
 $("zoomVal").textContent = $("zoomRange").value + "%";
 refresh();
 });
+$("fontSel").addEventListener("change", function () {
+state.fontKey = $("fontSel").value;
+refresh();
+});
+$("fontRange").addEventListener("input", function () {
+state.fontScale = $("fontRange").value / 100;
+$("fontVal").textContent = $("fontRange").value + "%";
+refresh();
+});
+$("boldOn").addEventListener("click", function () {
+state.bold = true; segSet($("boldOn"), $("boldOff")); refresh();
+});
+$("boldOff").addEventListener("click", function () {
+state.bold = false; segSet($("boldOff"), $("boldOn")); refresh();
+});
+function alignSet(a) {
+state.align = a;
+$("alignL").setAttribute("aria-pressed", a === "left"? "true": "false");
+$("alignC").setAttribute("aria-pressed", a === "center"? "true": "false");
+$("alignR").setAttribute("aria-pressed", a === "right"? "true": "false");
+refresh();
+}
+$("alignL").addEventListener("click", function () { alignSet("left");});
+$("alignC").addEventListener("click", function () { alignSet("center");});
+$("alignR").addEventListener("click", function () { alignSet("right");});
+$("textColor").addEventListener("input", function () {
+state.textColor = $("textColor").value;
+refresh();
+});
+$("labelColorReset").addEventListener("click", function () {
+state.labelColors = {};
+labelSig = "\u0000reset";
+refresh();
+toast("标签颜色已恢复默认");
+});
 
+$("exportFormat").addEventListener("change", function () {
+state.exportFormat = $("exportFormat").value;
+});
 $("downloadBtn").addEventListener("click", download);
 $("copyBtn").addEventListener("click", copyText);
 
@@ -1254,29 +2045,21 @@ renderLangChips();
 refresh();
 }
 function keyOf(origSlides) {
-var params = "none";
-if (state.xfMode === "translate") params = "tr:" + selectedLangCodes();
-else if (state.xfMode === "pinyin") params = "py:" + state.pyStyle;
-return state.xfMode + "|" + params + "|" + JSON.stringify(origSlides);
+var parts = [];
+if (state.useTranslate) parts.push("tr:" + selectedLangCodes());
+if (state.usePinyin) parts.push("py:" + state.pyStyle + ":" + state.pyTone);
+return parts.join("+") + "|" + JSON.stringify(origSlides);
 }
 function origToDisplay(slides) {
 return slides.map(function (sl) {
 return { label: sl.label, items: sl.lines.map(function (l) { return { t: l, k: "main"};})};
 });
 }
-function setTransStatus(pct, msg, kind) {
-var st = $("transStatus");
+function setXfStatus(pct, msg, kind) {
+var st = $("xfStatus");
 st.classList.add("show");
-if (typeof pct === "number") $("transBarFill").style.width = Math.round(pct * 100) + "%";
-var m = $("transMsg");
-m.textContent = msg || "";
-m.className = "msg" + (kind? " " + kind: "");
-}
-function setPyStatus(pct, msg, kind) {
-var st = $("pyStatus");
-st.classList.add("show");
-if (typeof pct === "number") $("pyBarFill").style.width = Math.round(pct * 100) + "%";
-var m = $("pyMsg");
+if (typeof pct === "number") $("xfBarFill").style.width = Math.round(pct * 100) + "%";
+var m = $("xfMsg");
 m.textContent = msg || "";
 m.className = "msg" + (kind? " " + kind: "");
 }
@@ -1327,22 +2110,25 @@ c2 = c2.then(function () { return translateText(l, tl).then(function (x) { res.p
 return c2.then(function () { return res;});
 });
 }
-function generateTranslation() {
+function generateAll() {
 if (state.xfBusy) return;
+if (!state.useTranslate && !state.usePinyin) { toast("先打开「多语翻译」或「加拼音」中的至少一项"); return;}
 var orig = buildSlides($("lyricText").value);
-if (!orig.length) { toast("先在第 2 步填好歌词，再翻译"); return;}
+if (!orig.length) { toast("先在第 2 步填好歌词，再生成"); return;}
 var langs = state.transLangs.slice();
-if (!langs.length) { toast("先添加至少一种目标语言"); return;}
-if (typeof navigator !== "undefined" && "onLine" in navigator && !navigator.onLine) { setTransStatus(1, "翻译需要联网：当前没有网络连接，请联网后再试；预览和导出仍是原文。", "err"); return;}
+if (state.useTranslate &&!langs.length) { toast("先添加至少一种目标语言"); return;}
+if (state.useTranslate && typeof navigator !== "undefined" && "onLine" in navigator && !navigator.onLine) { setXfStatus(1, "翻译需要联网：当前没有网络连接，请联网后再试；预览和导出仍是原文。", "err"); return;}
 var key = keyOf(orig);
 state.xfBusy = true;
-var btn = $("translateBtn");
+var btn = $("genBtn");
 btn.disabled = true;
+var transBlocks = null;
+var chain = Promise.resolve();
+if (state.useTranslate) {
+transBlocks = [];
 var totalSteps = orig.length * langs.length;
 var step = 0;
-setTransStatus(0, "正在翻译，共 " + orig.length + " 页 × " + langs.length + " 种语言…");
-var display = [];
-var chain = Promise.resolve();
+setXfStatus(0, "正在翻译，共 " + orig.length + " 页 × " + langs.length + " 种语言…");
 orig.forEach(function (sl, pageIdx) {
 chain = chain.then(function () {
 var blocks = [];
@@ -1350,27 +2136,49 @@ var c = Promise.resolve();
 langs.forEach(function (lg, li) {
 c = c.then(function () {
 step++;
-setTransStatus((step - 1) / totalSteps, "正在翻译第 " + (pageIdx + 1) + " / " + orig.length + " 页（" + lg.name + "）…");
+setXfStatus((step - 1) / totalSteps * 0.9, "正在翻译第 " + (pageIdx + 1) + " / " + orig.length + " 页（" + lg.name + "）…");
 return translateSlideLines(sl.lines, lg.code).then(function (parts) { blocks[li] = parts;});
 });
 });
-return c.then(function () {
-var items = sl.lines.map(function (l) { return { t: l, k: "main"};});
-blocks.forEach(function (parts, li) {
+return c.then(function () { transBlocks[pageIdx] = blocks;});
+});
+});
+}
+if (state.usePinyin) {
+chain = chain.then(function () {
+setXfStatus(0.92, "正在加载拼音词库并生成拼音…");
+return ensurePinyinLib();
+});
+}
+chain.then(function () {
+var display = orig.map(function (sl, pi) {
+var items = [];
+sl.lines.forEach(function (l) {
+if (state.usePinyin) {
+var pd = pinyinData(l);
+if (pd) {
+if (state.pyStyle === "paren") { items.push({ t: l + "（" + pd.plain + "）", k: "main"}); return;}
+items.push({ t: l, k: "unit", cells: pd.cells, plain: pd.plain, pos: state.pyStyle});
+return;
+}
+}
+items.push({ t: l, k: "main"});
+});
+if (transBlocks && transBlocks[pi]) {
+transBlocks[pi].forEach(function (parts, li) {
+if (!parts) return;
 parts.forEach(function (p) { if (p) items.push({ t: p, k: li === 0? "tr": "tr2"});});
 });
-display.push({ label: sl.label, items: items});
+}
+return { label: sl.label, items: items};
 });
-});
-});
-chain.then(function () {
 state.display = display;
 state.displayKey = key;
-setTransStatus(1, "翻译完成：每页原文在上、各语言译文依次在下，请对照原文校对一遍。", "ok");
+setXfStatus(1, "生成完成，请对照原文校对一遍（机翻和多音字尤其要看）。", "ok");
 refresh();
-toast("多语对照已生成");
+toast("对照版已生成");
 }).catch(function () {
-setTransStatus(1, "翻译需要联网：当前无法连接翻译服务，请联网后再试；预览和导出仍是原文。", "err");
+setXfStatus(1, "生成失败，请检查网络后重试（翻译需要联网，拼音词库已内置本机）；预览和导出仍是原文。", "err");
 }).then(function () {
 state.xfBusy = false;
 btn.disabled = false;
@@ -1384,82 +2192,61 @@ if (!(window.pinyinPro && window.pinyinPro.pinyin)) throw new Error("pinyin lib 
 });
 }
 var HAN_RE = /[\u3400-\u9fff]/;
-function pinyinLine(text) {
-if (!HAN_RE.test(text)) return "";
+function pinyinData(text) {
+if (!HAN_RE.test(text)) return null;
+var toneType = state.pyTone === "none"? "none": "symbol";
 var arr = null;
-try { arr = window.pinyinPro.pinyin(text, { toneType: "symbol", type: "array"});} catch (e) {}
+try { arr = window.pinyinPro.pinyin(text, { toneType: toneType, type: "array"});} catch (e) {}
 if (!arr || arr.length !== text.length) {
 try {
-var s = window.pinyinPro.pinyin(text, { toneType: "symbol"});
-return s.replace(/ +/g, " ").replace(/ ([，。；：！？、）】」』])/g, "$1").trim();
-} catch (e) { return "";}
+var s = window.pinyinPro.pinyin(text, { toneType: toneType});
+var plain = s.replace(/ +/g, " ").replace(/ ([，。；：！？、）】」』])/g, "$1").trim();
+return plain? { cells: null, plain: plain}: null;
+} catch (e) { return null;}
 }
-var out = "";
+var cells = [], tokens = [], run = "";
+function flushRun() { if (run) { cells.push({ c: run, p: ""}); run = "";}}
 for (var i = 0; i < text.length; i++) {
 var ch = text.charAt(i);
-if (HAN_RE.test(ch)) {
-if (out && out.charAt(out.length - 1) !== " ") out += " ";
-out += arr[i] + " ";
-} else out += ch;
+if (HAN_RE.test(ch)) { flushRun(); cells.push({ c: ch, p: arr[i]}); tokens.push(arr[i]);}
+else if (ch === " ") { flushRun(); cells.push({ c: "", p: "", sp: true});}
+else run += ch;
 }
-return out.replace(/ +/g, " ").replace(/ ([，。；：！？、）】」』])/g, "$1").replace(/([（【「『]) /g, "$1").trim();
-}
-function generatePinyin() {
-if (state.xfBusy) return;
-var orig = buildSlides($("lyricText").value);
-if (!orig.length) { toast("先在第 2 步填好歌词，再加拼音"); return;}
-var key = keyOf(orig);
-state.xfBusy = true;
-var btn = $("pinyinBtn");
-btn.disabled = true;
-setPyStatus(0, "正在加载拼音词库并生成…");
-ensurePinyinLib().then(function () {
-var display = orig.map(function (sl) {
-var items = [];
-sl.lines.forEach(function (l) {
-var py = pinyinLine(l);
-if (state.pyStyle === "paren") items.push({ t: py? l + "（" + py + "）": l, k: "main"});
-else {
-if (py) items.push({ t: py, k: "py"});
-items.push({ t: l, k: "main"});
-}
-});
-return { label: sl.label, items: items};
-});
-state.display = display;
-state.displayKey = key;
-setPyStatus(1, "拼音已生成。", "ok");
-refresh();
-toast("拼音已生成");
-}).catch(function () {
-setPyStatus(1, "拼音词库加载失败，请重试；预览和导出仍是原文。", "err");
-}).then(function () {
-state.xfBusy = false;
-btn.disabled = false;
-});
+flushRun();
+if (!tokens.length) return null;
+return { cells: cells, plain: tokens.join(" ")};
 }
 
-function setXfMode(mode) {
-state.xfMode = mode;
-$("xfNone").setAttribute("aria-pressed", mode === "none"? "true": "false");
-$("xfTranslate").setAttribute("aria-pressed", mode === "translate"? "true": "false");
-$("xfPinyin").setAttribute("aria-pressed", mode === "pinyin"? "true": "false");
-$("panelTranslate").hidden = mode !== "translate";
-$("panelPinyin").hidden = mode !== "pinyin";
+function syncXfPanels() {
+$("tglTranslate").setAttribute("aria-pressed", state.useTranslate? "true": "false");
+$("tglPinyin").setAttribute("aria-pressed", state.usePinyin? "true": "false");
+$("panelTranslate").hidden =!state.useTranslate;
+$("panelPinyin").hidden =!state.usePinyin;
+$("genRow").style.display = (state.useTranslate || state.usePinyin)? "": "none";
 refresh();
 }
-$("xfNone").addEventListener("click", function () { setXfMode("none");});
-$("xfTranslate").addEventListener("click", function () { setXfMode("translate");});
-$("xfPinyin").addEventListener("click", function () { setXfMode("pinyin");});
+$("tglTranslate").addEventListener("click", function () { state.useTranslate =!state.useTranslate; syncXfPanels();});
+$("tglPinyin").addEventListener("click", function () { state.usePinyin =!state.usePinyin; syncXfPanels();});
 $("addLangBtn").addEventListener("click", addLang);
-$("translateBtn").addEventListener("click", generateTranslation);
-$("pinyinBtn").addEventListener("click", generatePinyin);
-$("pyAbove").addEventListener("click", function () {
-state.pyStyle = "above"; segSet($("pyAbove"), $("pyParen")); refresh();
-});
-$("pyParen").addEventListener("click", function () {
-state.pyStyle = "paren"; segSet($("pyParen"), $("pyAbove")); refresh();
-});
+$("genBtn").addEventListener("click", generateAll);
+function pyStyleSet(style) {
+state.pyStyle = style;
+$("pyBelow").setAttribute("aria-pressed", style === "below"? "true": "false");
+$("pyAbove").setAttribute("aria-pressed", style === "above"? "true": "false");
+$("pyParen").setAttribute("aria-pressed", style === "paren"? "true": "false");
+refresh();
+}
+$("pyBelow").addEventListener("click", function () { pyStyleSet("below");});
+$("pyAbove").addEventListener("click", function () { pyStyleSet("above");});
+$("pyParen").addEventListener("click", function () { pyStyleSet("paren");});
+function pyToneSet(tone) {
+state.pyTone = tone;
+$("toneNo").setAttribute("aria-pressed", tone === "none"? "true": "false");
+$("toneYes").setAttribute("aria-pressed", tone === "symbol"? "true": "false");
+refresh();
+}
+$("toneNo").addEventListener("click", function () { pyToneSet("none");});
+$("toneYes").addEventListener("click", function () { pyToneSet("symbol");});
 
 renderLangChips();
 render();
