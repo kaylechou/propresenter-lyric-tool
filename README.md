@@ -22,6 +22,7 @@
 - 重复段标副歌，其余依次标主歌；晚出现的独立段标桥段，结尾短段标尾声
 - 一键「智能整理结构」，段落名可再改
 - 智能清理：只去汉字间空格，英文、韩文词间空格原样保留
+- 歌谱整理：一键去掉和弦行、简谱数字行与谱头信息，按主歌/副歌/桥段等段落分组；谱面上下两行歌词的，开「双行歌词」再整理，会按两遍拆成主歌一、主歌二
 
 ### 3. 拆页与样式设置
 
@@ -51,18 +52,18 @@
 
 ![完整使用说明](docs/images/howto-guide.png)
 
-## 下载（当前版本 1.0.0）
+## 下载（当前版本 1.1.0）
 
 | 包 | 适用 | 用法 |
 | --- | --- | --- |
-| [lyric-tool-setup-1.0.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-setup-1.0.0.exe) | Windows | 安装包，双击按向导安装 |
-| [lyric-tool-portable-1.0.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-portable-1.0.0.exe) | Windows | 便携版，双击直接运行 |
-| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
-| [lyric-tool-1.0.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-1.0.0-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
-| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
-| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
-| [lyric-tool-1.0.0-mac.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-1.0.0-mac.zip) | Mac（Intel 芯片） | 解压得 `转歌词.app`，首次右键 → 打开 |
-| [lyric-tool-1.0.0-arm64-mac.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.0.0/lyric-tool-1.0.0-arm64-mac.zip) | Mac（Apple Silicon） | 解压得 `转歌词.app`，首次右键 → 打开 |
+| [lyric-tool-setup-1.1.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-setup-1.1.0.exe) | Windows | 安装包，双击按向导安装 |
+| [lyric-tool-portable-1.1.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-portable-1.1.0.exe) | Windows | 便携版，双击直接运行 |
+| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
+| [lyric-tool-1.1.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-1.1.0-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
+| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
+| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
+| [lyric-tool-1.1.0-mac.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-1.1.0-mac.zip) | Mac（Intel 芯片） | 解压得 `转歌词.app`，首次右键 → 打开 |
+| [lyric-tool-1.1.0-arm64-mac.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.1.0/lyric-tool-1.1.0-arm64-mac.zip) | Mac（Apple Silicon） | 解压得 `转歌词.app`，首次右键 → 打开 |
 
 八个包怎么用，详见下图：
 
@@ -73,6 +74,7 @@
 - Windows、Mac 桌面版除翻译需联网外，全部离线可用（OCR 中英日韩繁体词库内置）
 - 安装包未签名：Windows 首次运行若弹出 SmartScreen，点“更多信息”→“仍要运行”；Mac 首次打开请右键 → 打开，仍被拦截时到“系统设置 → 隐私与安全性”点“仍要打开”
 - Mac 芯片查看方法：左上角苹果菜单 → 关于本机 → 芯片一栏
+- 启动自动检测更新：打开软件后自动检查新版本，有新版会弹窗提示，可一键下载更新（Windows 下载后自动打开安装程序，Mac 下载后请解压替换旧版）
 
 ## 导入 ProPresenter
 
