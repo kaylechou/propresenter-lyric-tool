@@ -1,0 +1,50 @@
+name: Notify Telegram on release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send release notice to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+          RELEASE_BODY: ${{ github.event.release.body }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          tag = os.environ.get("RELEASE_TAG", "")
+          if tag:
+              name = os.environ.get("RELEASE_NAME") or tag
+              body = os.environ.get("RELEASE_BODY", "") or ""
+              if len(body) > 3000:
+                  body = body[:3000] + "……"
+              text = (
+                  f"新版本发布：{name}\n"
+                  f"标签：{tag}\n"
+                  f"{body}\n"
+                  f"下载：{os.environ['RELEASE_URL']}"
+              )
+          else:
+              text = "Telegram 通知测试：工作流已接通，下次发版会自动推送。"
+          if len(text) > 4096:
+              text = text[:4093] + "…"
+          data = json.dumps({
+              "chat_id": os.environ["TELEGRAM_CHAT_ID"],
+              "text": text,
+          }).encode("utf-8")
+          req = urllib.request.Request(
+              f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}/sendMessage",
+              data=data,
+              headers={"Content-Type": "application/json"},
+          )
+          with urllib.request.urlopen(req, timeout=30) as resp:
+              print(resp.status, resp.read().decode("utf-8", "replace")[:200])
+          PY
