@@ -6,7 +6,7 @@
 
 ## 用法
 
-顶部五胶囊切换模块：导入歌词／校对歌词／拆页与样式／翻译·拼音／分页预览，粘贴载入、字幕导入、识别完自动切到校对，生成对照版后自动切到分页预览。
+顶部五胶囊切换模块：导入歌词／校对歌词／拆页与样式／翻译·拼音／分页预览，粘贴载入、字幕导入、识别完自动切到校对，生成对照版后自动切到分页预览。页首标题栏右侧有「使用说明」按钮，点开是八节短句版使用说明。
 
 ### 1. 导入
 
@@ -33,8 +33,9 @@
 - 段落标记多语言识别：日韩＋世界常规语言段落词都能认，段落名按标记语言输出（`[Chorus]`→Chorus、`[サビ]`→サビ、`[후렴]`→후렴，无标记推断用歌中已出现标记的语言，全首无标记按歌词主导语言）
 - 歌谱识别语言 33 项（默认多语言混合），识别前预处理（放大、灰度、对比增强、整块文本模式保行序）
 - 识别引擎双选：快速识别（默认）即开即用；增强识别 · PaddleOCR 本机识别、图片不上传；33 门识别数据与 PaddleOCR 模型已全部内置本机，离线可用，失败自动回退快速识别
-- 全网搜索匹配 · 对照纠错：自动挑最干净词句作搜索词，先查 LRCLIB 再经 DuckDuckGo 代理兜底，候选逐行对照（相同 / 差异逐字高亮 / 谱面独有 / 网上多出），逐行采用网上、按候选分段重组，谱面为准、全程不自动覆盖
-- 搜索自适应选路：按引擎探测直连（LRCLIB、Bing、百度、DuckDuckGo、Google），直连通直接搜、不通走自有搜索中转，探测未完成前默认中转不阻塞，失败即时回退
+- 云端识别：大模型识谱，谱面复杂、快速／增强认不准时用；模型按提供方分组（Gemini、智谱、通义、硅基流动），密钥按提供方分别保存、只存本机，失败自动回退本地识别；云端识别出的歌名、歌手自动填入歌名／歌手框（已有内容不覆盖）
+- 全网搜索（第 1 步第三页签）：填歌名（可再填歌手、专辑）搜索；流程内自动轮询（百度→Bing→DuckDuckGo→Google，凑满 6 条候选即停），无手动开关；候选点「查看并编辑」先看全文，结果框可直接改文字，点「生成分页预览」即用改后歌词拆页；换一换、重新搜索、相关性门槛（无关结果滤掉）、各路结果明细、简繁双搜繁转简、歌名英日韩轮询；搜不到不编造
+- 搜索三级路由：直连→自有中转补位→免费代理兜底；抓取按响应头与 meta 判定编码解 GBK/Big5，实体单遍全量解码，损坏内容自动降级重抓
 - 谱头粘连行过滤：速度数字与标题粘连成一行的谱头行不再漏进歌词
 
 ### 3. 拆页与样式设置
@@ -68,17 +69,19 @@
 
 ![完整使用说明](docs/images/howto-guide.png)
 
-## 下载（当前版本 1.3.0）
+页首标题栏右侧「使用说明」按钮可打开八节短句版使用说明（导入、识别引擎、校对、拆页样式、翻译拼音、预览导出、桌面版不同之处、通用规则）。
+
+## 下载（当前版本 1.4.0）
 
 | 包 | 适用 | 用法 |
 | --- | --- | --- |
-| [lyric-tool-setup-1.3.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/lyric-tool-setup-1.3.0.exe) | Windows | 安装包，双击按向导安装 |
-| [lyric-tool-portable-1.3.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/lyric-tool-portable-1.3.0.exe) | Windows | 便携版，双击直接运行 |
-| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
-| [lyric-tool-1.3.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/lyric-tool-1.3.0-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
-| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
-| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
-| [SHA256SUMS.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.3.0/SHA256SUMS.txt) | 全部 | 下载完整性校验对照表（工具自动更新时自动取用） |
+| [lyric-tool-setup-1.4.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/lyric-tool-setup-1.4.0.exe) | Windows | 安装包，双击按向导安装 |
+| [lyric-tool-portable-1.4.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/lyric-tool-portable-1.4.0.exe) | Windows | 便携版，双击直接运行 |
+| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
+| [lyric-tool-1.4.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/lyric-tool-1.4.0-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
+| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
+| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
+| [SHA256SUMS.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.0/SHA256SUMS.txt) | 全部 | 下载完整性校验对照表（工具自动更新时自动取用） |
 
 六个包怎么选：Windows 4 个任选其一，Mac 按芯片选一个（1.3.0 起 Mac 每芯片只留一个手工包，不再提供 builder 包）。下图为 1.0.0 时的选包说明，选包逻辑相同，包名与大小以上表为准：
 
@@ -86,13 +89,13 @@
 
 ## 桌面版说明
 
-- Windows、Mac 桌面版除翻译、云端识别需联网外，全部离线可用（33 门识别数据与 PaddleOCR 模型已内置本机）
+- Windows、Mac 桌面版除翻译、云端识别、搜索需联网外，全部离线可用（33 门识别数据与 PaddleOCR 模型已内置本机）
 - 安装包未签名：Windows 首次运行若弹出 SmartScreen，点“更多信息”→“仍要运行”；Mac 首次打开请右键 → 打开，仍被拦截时到“系统设置 → 隐私与安全性”点“仍要打开”
 - Mac 芯片查看方法：左上角苹果菜单 → 关于本机 → 芯片一栏
 - 启动自动检测更新：打开软件后自动检查新版本，有新版会弹窗提示，可一键下载更新（Windows 下载后自动打开安装程序，Mac 下载后请解压替换旧版）；更新检查与下载先走自有搜索中转、失败回退直连，8 连接分段下载、断点续传，更新弹窗显示对应版本的发版正文
 - 下载完整性校验：更新下载完成后自动验尺寸＋SHA256（对照表 SHA256SUMS.txt），不一致重下最多 3 次，仍不一致不打开并报错
 - 语义纠错建议：本地词典＋搭配检查，只标建议、不自动改，接受才改行并同步导出
-- 云端识别选项：需自己的 GitHub 令牌（只存本机），默认仍本地识别；中转只转发、不存储、不记日志，失败回退本地识别
+- 云端识别：Gemini（免费档）或智谱／通义／硅基流动，各平台建密钥、只贴工具对应提供方令牌框、只存本机；中转只转发、不存储、不记日志，失败回退本地识别
 - 流量全加密：所有对外请求一律 HTTPS；域名加密 ECH，不改系统 DNS、不覆盖代理设置
 
 ## 导入 ProPresenter
