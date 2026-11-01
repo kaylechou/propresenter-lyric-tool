@@ -24,6 +24,7 @@
 - 重复段标副歌，其余依次标主歌；晚出现的独立段标桥段，结尾短段标尾声
 - 一键「智能整理结构」，段落名可再改
 - 智能清理：只去汉字间空格，英文、韩文词间空格原样保留
+- 去括号拼音：第 2 步默认开启的开关，只有括号内全部为合法拼音音节才连括号去掉，英文与说明括号保留
 - 繁简互转：校对区转简体、转繁体一键全文原地互转，只转歌词正文，歌名／歌手框不动，空行分段与段落名行位置不变；歌词菜单同步有转简体、转繁体两项
 - 歌谱整理：一键去掉和弦行、简谱数字行与谱头信息，按主歌/副歌/桥段等段落分组；谱面上下两行歌词的，开「双行歌词」再整理，会按两遍拆成主歌一、主歌二
 - 谱头清除：第一句真歌词前整段去掉，专辑/原曲/年份/拉丁乱码行在正文任何位置也删
@@ -44,9 +45,10 @@
 ![拆页与样式设置](docs/images/step-style.png)
 
 - 按段落、行数或字数拆页（字数 6–80 可调，默认 24，整行装页不拆行）
-- 字体（微软雅黑 / 黑体 / 宋体 / 楷体 / Arial）、字号 80%–140%、粗细、对齐、文字颜色
+- 字体（微软雅黑 / 黑体 / 宋体 / 楷体 / Arial）、字号直接输入具体磅值（全页统一，与百分比滑杆同步，60pt=100%）、粗细、对齐、文字颜色；段落预设：行高倍数、行距百分比、段落间距、字符间距、边距（左/上/右/下）、描边（开关/宽度/颜色）、阴影（开关/角度/偏移/模糊/透明度/颜色）
 - 每个段落标签的颜色逐个改（默认主歌蓝、副歌粉红）
 - 改动同步进预览与 `.pro` / `.pro6`
+- 导出文本框铺满 1920×1080（边距为 0 时），导出无页末空行
 
 ### 4. 翻译 / 拼音（可选）
 
@@ -54,7 +56,7 @@
 - 翻译：36 种语言多选 + 自定义语言代码，最多 4 种（默认英语），逐页逐语言翻译，分页不变
 - 翻译跳过同语言行：某行本身就是目标语言时跳过该行该目标语言的翻译，避免同页出现两句相同歌词
 - 翻译首字母大写（中日韩、阿拉伯、希伯来、印地、泰语除外），预览与 txt/.pro/.pro6 一致
-- 译文/拼音点改：预览卡片点击变输入框，改动同步导出，重新生成对照版会覆盖手动修改
+- 译文/拼音点改（1.5.0 修复）：预览卡片与放大查看内译文行、拼音行点一下变输入框，回车或失焦确认、Esc 取消，改动同步导出，重新生成对照版会覆盖手动修改
 - 拼音：逐字注音、只注汉字，位置可选中文行下方 / 上方 / 行尾括号，声调默认不带
 - 翻译走免费接口，无需 key；歌词机翻需校对
 
@@ -70,19 +72,19 @@
 
 ![完整使用说明](docs/images/howto-guide.png)
 
-页首标题栏右侧「使用说明」按钮可打开八节短句版使用说明（导入、识别引擎、校对、拆页样式、翻译拼音、预览导出、桌面版不同之处、通用规则）。
+页首标题栏右侧「使用说明」按钮可打开八节短句版使用说明（导入、识别引擎、校对、拆页样式、翻译拼音、预览导出、桌面版不同之处、通用规则）；说明顶部固定置顶仓库地址条。
 
-## 下载（当前版本 1.4.2）
+## 下载（当前版本 1.5.0）
 
 | 包 | 适用 | 用法 |
 | --- | --- | --- |
-| [lyric-tool-setup-1.4.2.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/lyric-tool-setup-1.4.2.exe) | Windows | 安装包，双击按向导安装 |
-| [lyric-tool-portable-1.4.2.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/lyric-tool-portable-1.4.2.exe) | Windows | 便携版，双击直接运行 |
-| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
-| [lyric-tool-1.4.2-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/lyric-tool-1.4.2-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
-| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
-| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
-| [SHA256SUMS.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.4.2/SHA256SUMS.txt) | 全部 | 下载完整性校验对照表（工具自动更新时自动取用） |
+| [lyric-tool-setup-1.5.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-setup-1.5.0.exe) | Windows | 安装包，双击按向导安装 |
+| [lyric-tool-portable-1.5.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-portable-1.5.0.exe) | Windows | 便携版，双击直接运行 |
+| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
+| [lyric-tool-1.5.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-1.5.0-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
+| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
+| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
+| [SHA256SUMS.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/SHA256SUMS.txt) | 全部 | 下载完整性校验对照表（工具自动更新时自动取用） |
 
 六个包怎么选：Windows 4 个任选其一，Mac 按芯片选一个（1.3.0 起 Mac 每芯片只留一个手工包，不再提供 builder 包）。下图为 1.0.0 时的选包说明，选包逻辑相同，包名与大小以上表为准：
 
@@ -101,7 +103,8 @@ Intel 芯片把名字换成 `转歌词-Intel.app`。也可以把 `.app` 拖进�
 - Windows、Mac 桌面版除翻译、云端识别、搜索需联网外，全部离线可用（33 门识别数据与 PaddleOCR 模型已内置本机）
 - 安装包未签名：Windows 首次运行若弹出 SmartScreen，点“更多信息”→“仍要运行”；Mac 首次打开请右键 → 打开，仍被拦截时到“系统设置 → 隐私与安全性”点“仍要打开”
 - Mac 芯片查看方法：左上角苹果菜单 → 关于本机 → 芯片一栏
-- 启动自动检测更新：打开软件后自动检查新版本，有新版会弹窗提示，可一键下载更新（Windows 下载并校验通过后会先问是否继续安装，确认后打开安装程序并在向导里选安装路径，同时打开下载文件夹，装完后可自行决定是否删除安装包，Mac 下载后请解压替换旧版）；更新检查与下载先走直连、直连不通回中转，8 连接分段下载、断点续传，更新弹窗显示对应版本的发版正文；中转限流时延迟重试，两路失败弹窗显示真实原因并可点“直接下载最新版”用浏览器直接下载对应安装包
+- 启动自动检测更新：打开软件后自动检查新版本，有新版会弹窗提示，可一键下载更新（Windows 下载并校验通过后会先问是否继续安装，确认后打开安装程序并在向导里选安装路径，同时打开下载文件夹，装完后可自行决定是否删除安装包，Mac 下载后请解压替换旧版）；手动点菜单「检查更新」时，已是最新版、未取到版本、检查失败都会弹提示（此前已是最新版时无反应），自动检查仍静默；更新检查与下载先走直连、直连不通回中转，8 连接分段下载、断点续传，更新弹窗显示对应版本的发版正文；中转限流时延迟重试，两路失败弹窗显示真实原因并可点“直接下载最新版”用浏览器直接下载对应安装包
+- 关于置顶：桌面版「关于」顶部固定显示 GitHub 仓库地址
 - 下载完整性校验：更新下载完成后自动验尺寸＋SHA256（对照表 SHA256SUMS.txt），不一致重下最多 3 次，仍不一致不打开并报错
 - 语义纠错建议：本地词典＋搭配检查，只标建议、不自动改，接受才改行并同步导出
 - 云端识别：Gemini（免费档）或智谱／通义／硅基流动，各平台建密钥、只贴工具对应提供方令牌框、只存本机；识别优先直连各家接口（桌面走主进程），直连不通自动切换，提供方拒答不切换；失败回退本地识别
