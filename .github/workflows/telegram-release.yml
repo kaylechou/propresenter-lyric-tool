@@ -4,9 +4,23 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      doc_path:
+        description: "Repo path of a document to send (sendDocument, optional)"
+        required: false
+        default: ""
+      image_path:
+        description: "Repo path of an image to send (sendPhoto, optional)"
+        required: false
+        default: ""
+      message:
+        description: "Text message to send first (optional)"
+        required: false
+        default: ""
 
 jobs:
   notify:
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
       - name: Send release notice to Telegram (text + media + files)
@@ -117,4 +131,88 @@ jobs:
               for fname, size, url in oversize:
                   lines.append(f"• {fname}（约 {size // 1048576}MB）{url}")
               send_text("\n".join(lines))
+          PY
+
+  send_files:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send files to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DOC_PATH: ${{ inputs.doc_path }}
+          IMAGE_PATH: ${{ inputs.image_path }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys, urllib.request, uuid
+
+          TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+          CHAT = os.environ["TELEGRAM_CHAT_ID"]
+          API = f"https://api.telegram.org/bot{TOKEN}"
+          MAX_UPLOAD = 50 * 1024 * 1024
+          MAX_PHOTO = 10 * 1024 * 1024
+
+          def tg(method, data=None, files=None):
+              if files is None:
+                  req = urllib.request.Request(
+                      f"{API}/{method}", data=json.dumps(data).encode(),
+                      headers={"Content-Type": "application/json"})
+                  with urllib.request.urlopen(req, timeout=120) as r:
+                      return json.loads(r.read())
+              boundary = uuid.uuid4().hex
+              body = b""
+              for k, v in data.items():
+                  body += f"--{boundary}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n".encode()
+              for field, (fn, blob, mt) in files.items():
+                  body += (f"--{boundary}\r\nContent-Disposition: form-data; name=\"{field}\"; "
+                           f"filename=\"{fn}\"\r\nContent-Type: {mt}\r\n\r\n").encode() + blob + b"\r\n"
+              body += f"--{boundary}--\r\n".encode()
+              req = urllib.request.Request(
+                  f"{API}/{method}", data=body,
+                  headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
+              with urllib.request.urlopen(req, timeout=300) as r:
+                  return json.loads(r.read())
+
+          def send_text(text):
+              if len(text) > 4096:
+                  text = text[:4093] + "…"
+              tg("sendMessage", {"chat_id": CHAT, "text": text})
+
+          msg = os.environ.get("MESSAGE", "")
+          if msg:
+              send_text(msg)
+
+          def send_file(path, kind):
+              if not os.path.isfile(path):
+                  print(f"missing file: {path}")
+                  sys.exit(1)
+              size = os.path.getsize(path)
+              if size > MAX_UPLOAD:
+                  print(f"file over 50MB, refused: {path} ({size})")
+                  sys.exit(1)
+              with open(path, "rb") as f:
+                  blob = f.read()
+              fname = os.path.basename(path)
+              caption = fname[:1020]
+              base = {"chat_id": CHAT, "caption": caption}
+              if kind == "image" and size <= MAX_PHOTO:
+                  ext = fname.rsplit(".", 1)[-1].lower() if "." in fname else ""
+                  mt = {"png": "image/png", "jpg": "image/jpeg",
+                        "jpeg": "image/jpeg", "webp": "image/webp"}.get(ext, "image/png")
+                  tg("sendPhoto", base, {"photo": (fname, blob, mt)})
+              else:
+                  tg("sendDocument", base, {"document": (fname, blob, "application/octet-stream")})
+              print(f"sent {kind}: {fname} ({size} bytes)")
+
+          doc = os.environ.get("DOC_PATH", "")
+          img = os.environ.get("IMAGE_PATH", "")
+          if doc:
+              send_file(doc, "doc")
+          if img:
+              send_file(img, "image")
+          if not doc and not img and not msg:
+              print("nothing to send: all inputs empty")
           PY
