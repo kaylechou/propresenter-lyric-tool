@@ -80,10 +80,10 @@
 | --- | --- | --- |
 | [lyric-tool-setup-1.5.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-setup-1.5.0.exe) | Windows | 安装包，双击按向导安装 |
 | [lyric-tool-portable-1.5.0.exe](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-portable-1.5.0.exe) | Windows | 便携版，双击直接运行 |
-| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/Pro Pages tool.exe` |
-| [lyric-tool-1.5.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-1.5.0-win.zip) | Windows | 解压即用版，解压后直接运行 `Pro Pages tool.exe` |
-| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `Pro Pages tool-Intel.app`，首次右键 → 打开 |
-| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `Pro Pages tool-AppleSilicon.app`，首次右键 → 打开 |
+| [lyric-tool-windows-portable.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-windows-portable.zip) | Windows | 免安装版，解压后运行 `win-unpacked/转歌词.exe` |
+| [lyric-tool-1.5.0-win.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-1.5.0-win.zip) | Windows | 解压即用版，解压后直接运行 `转歌词.exe` |
+| [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | 解压得 `转歌词-Intel.app`，首次右键 → 打开 |
+| [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | 解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
 | [SHA256SUMS.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.5.0/SHA256SUMS.txt) | 全部 | 下载完整性校验对照表（工具自动更新时自动取用） |
 
 六个包怎么选：Windows 4 个任选其一，Mac 按芯片选一个，包名与大小以上表为准：
@@ -91,10 +91,10 @@
 Mac 打不开（提示“已损坏”）怎么办：安装包未签名，属正常现象，包本身没坏。先解压，对解压出的 `.app` 清掉浏览器下载隔离标记再打开，命令里的文件名必须与实际一致（重复下载的文件名会带 `-2` 后缀）：
 
 ```
-xattr -cr ~/Downloads/Pro Pages tool-AppleSilicon.app
+xattr -cr ~/Downloads/转歌词-AppleSilicon.app
 ```
 
-Intel 芯片把名字换成 `Pro Pages tool-Intel.app`。也可以把 `.app` 拖进终端窗口再跑 `xattr -cr`。如果已经点过损坏提示，先删掉重解压，解压完先清标记再打开；首次打开请右键 → 打开。
+Intel 芯片把名字换成 `转歌词-Intel.app`。也可以把 `.app` 拖进终端窗口再跑 `xattr -cr`。如果已经点过损坏提示，先删掉重解压，解压完先清标记再打开；首次打开请右键 → 打开。
 
 
 ## 桌面版说明
