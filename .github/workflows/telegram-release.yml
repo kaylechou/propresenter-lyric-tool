@@ -18,6 +18,13 @@ on:
         required: false
         default: ""
 
+  push:
+    branches: [main]
+    paths:
+      - 'docs/*.md'
+      - 'docs/*.txt'
+      - 'docs/*.png'
+
 jobs:
   notify:
     if: github.event_name == 'release'
@@ -215,4 +222,88 @@ jobs:
               send_file(img, "image")
           if not doc and not img and not msg:
               print("nothing to send: all inputs empty")
+          PY
+
+  sync_docs:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Send changed docs to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess, time, urllib.request, uuid
+
+          TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+          CHAT = os.environ["TELEGRAM_CHAT_ID"]
+          API = f"https://api.telegram.org/bot{TOKEN}"
+          MAX_UPLOAD = 50 * 1024 * 1024
+          MAX_PHOTO = 10 * 1024 * 1024
+
+          def tg(method, data=None, files=None):
+              if files is None:
+                  req = urllib.request.Request(
+                      f"{API}/{method}", data=json.dumps(data).encode(),
+                      headers={"Content-Type": "application/json"})
+                  with urllib.request.urlopen(req, timeout=120) as r:
+                      return json.loads(r.read())
+              boundary = uuid.uuid4().hex
+              body = b""
+              for k, v in data.items():
+                  body += f"--{boundary}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n".encode()
+              for field, (fn, blob, mt) in files.items():
+                  body += (f"--{boundary}\r\nContent-Disposition: form-data; name=\"{field}\"; "
+                           f"filename=\"{fn}\"\r\nContent-Type: {mt}\r\n\r\n").encode() + blob + b"\r\n"
+              body += f"--{boundary}--\r\n".encode()
+              req = urllib.request.Request(
+                  f"{API}/{method}", data=body,
+                  headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
+              with urllib.request.urlopen(req, timeout=300) as r:
+                  return json.loads(r.read())
+
+          def send_text(text):
+              if len(text) > 4096:
+                  text = text[:4093] + "…"
+              tg("sendMessage", {"chat_id": CHAT, "text": text})
+
+          before = os.environ.get("BEFORE", "")
+          sha = os.environ.get("SHA", "")
+          if not before or set(before) == {"0"}:
+              print("no usable before SHA, skipping")
+              raise SystemExit(0)
+          diff = subprocess.run(["git", "diff", "--name-only", before, sha],
+                                capture_output=True, text=True)
+          changed = [l.strip() for l in diff.stdout.splitlines() if l.strip()]
+          sendable = [f for f in changed
+                      if f.startswith("docs/") and f.count("/") == 1
+                      and (f.endswith(".md") or f.endswith(".txt") or f.endswith(".png"))]
+          print("changed:", changed)
+          print("sendable:", sendable)
+          for path in sendable:
+              if not os.path.isfile(path):
+                  print(f"skip missing (deleted?): {path}")
+                  continue
+              size = os.path.getsize(path)
+              if size > MAX_UPLOAD:
+                  send_text(f"文档更新：{path}（超过 50MB，未发送）")
+                  continue
+              with open(path, "rb") as fh:
+                  blob = fh.read()
+              fname = os.path.basename(path)
+              send_text(f"文档更新：{fname}")
+              base = {"chat_id": CHAT, "caption": fname[:1020]}
+              ext = fname.rsplit(".", 1)[-1].lower() if "." in fname else ""
+              if ext == "png" and size <= MAX_PHOTO:
+                  tg("sendPhoto", base, {"photo": (fname, blob, "image/png")})
+              else:
+                  tg("sendDocument", base, {"document": (fname, blob, "application/octet-stream")})
+              print(f"sent: {path} ({size} bytes)")
+              time.sleep(1.2)
           PY
