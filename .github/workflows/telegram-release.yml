@@ -278,9 +278,9 @@ jobs:
           if not before or set(before) == {"0"}:
               print("no usable before SHA, skipping")
               raise SystemExit(0)
-          diff = subprocess.run(["git", "diff", "--name-only", before, sha],
+          diff = subprocess.run(["git", "-c", "core.quotepath=false", "diff", "--name-only", before, sha],
                                 capture_output=True, text=True)
-          changed = [l.strip() for l in diff.stdout.splitlines() if l.strip()]
+          changed = [l.strip().strip('"') for l in diff.stdout.splitlines() if l.strip()]
           sendable = [f for f in changed
                       if f.startswith("docs/") and f.count("/") == 1
                       and (f.endswith(".md") or f.endswith(".txt") or f.endswith(".png"))]
