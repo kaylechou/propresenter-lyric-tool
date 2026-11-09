@@ -28,7 +28,7 @@
 - AI 密钥测试按钮：翻译 / 拼音密钥行旁加“测试”按钮，测当前框内密钥（空则测已存），不保存
 - PWA：网页版安装按钮常显（无系统提示时点它提示走浏览器菜单）；缓存升到 v2；已装应用的名字仍叫“转歌词”，须卸载重装才显示清单里的“Pro Pages tool”
 - 反馈后端迁移：部署时对既有 feedback_db 跑一次 migrate-logs.sql（加 logs 列，只跑一次）；新库建表已含 logs 列，不用跑
-- 本版 6 个包（Windows 安装包、便携版、2 个 Windows zip；Mac Intel 与 Apple Silicon 各 1 个 zip），另附 SHA256SUMS.txt 供下载完整性校验；安装细节与完整使用说明另有纯文本版（转歌词工具1.8.0安装细节.txt、转歌词工具1.8.0使用说明.txt），随 release 附件一起下载；网页版与桌面六包一起发
+- 本版 6 个包（Windows 安装包、便携版、2 个 Windows zip；Mac Intel 与 Apple Silicon 各 1 个 zip），另附 SHA256SUMS.txt 供下载完整性校验；安装细节与完整使用说明另有纯文本版（lyric-tool-1.8.0-install-details.txt、lyric-tool-1.8.0-usage-guide.txt），随 release 附件一起下载；网页版与桌面六包一起发
 
 安装包仍未签名：Windows 首次运行点“更多信息”→“仍要运行”，Mac 首次打开请右键→打开。
 
