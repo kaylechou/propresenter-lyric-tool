@@ -115,8 +115,8 @@
 | [lyric-tool-mac-intel.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/lyric-tool-mac-intel.zip) | Mac（Intel 芯片） | （193MB）解压得 `转歌词-Intel.app`，首次右键 → 打开 |
 | [lyric-tool-mac-applesilicon.zip](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/lyric-tool-mac-applesilicon.zip) | Mac（Apple Silicon，M1 / M2 / M3 / M4） | （189MB）解压得 `转歌词-AppleSilicon.app`，首次右键 → 打开 |
 | [SHA256SUMS.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/SHA256SUMS.txt) | 全部 | 下载完整性校验对照表（工具自动更新时自动取用） |
-| [转歌词工具1.8.0安装细节.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/%E8%BD%AC%E6%AD%8C%E8%AF%8D%E5%B7%A5%E5%85%B71.8.0%E5%AE%89%E8%A3%85%E7%BB%86%E8%8A%82.txt) | 全部 | 安装细节：下载哪个包、Windows/Mac 安装步骤、常见问题 |
-| [转歌词工具1.8.0使用说明.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/%E8%BD%AC%E6%AD%8C%E8%AF%8D%E5%B7%A5%E5%85%B71.8.0%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.txt) | 全部 | 完整使用说明（纯文本版，不用安装也能看） |
+| [lyric-tool-1.8.0-install-details.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/lyric-tool-1.8.0-install-details.txt) | 全部 | 安装细节：下载哪个包、Windows/Mac 安装步骤、常见问题 |
+| [lyric-tool-1.8.0-usage-guide.txt](https://github.com/kaylechou/propresenter-lyric-tool/releases/download/v1.8.0/lyric-tool-1.8.0-usage-guide.txt) | 全部 | 完整使用说明（纯文本版，不用安装也能看） |
 
 六个包怎么选：Windows 4 个任选其一，Mac 按芯片选一个；六包合计约 1.22 GB。安装细节与完整使用说明另有纯文本版（上表最后两行），随 release 附件一起下载。六个包怎么用，详见下图：
 
